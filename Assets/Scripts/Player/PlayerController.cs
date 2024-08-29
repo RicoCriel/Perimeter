@@ -38,9 +38,9 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = transform.forward * verticalInput + transform.right * horizontalInput;
         bool isSprinting = Input.GetKey(KeyCode.LeftShift);
         float currentSpeed = isSprinting ? moveSpeed * sprintMultiplier : moveSpeed;
-        if (inputDirection.magnitude > 0)
+        if (movement.magnitude > 0)
         {
-            player.Move(inputDirection, currentSpeed, Time.deltaTime);
+            player.Move(movement, currentSpeed, Time.deltaTime);
         }
         else
         {
