@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
     public static PlayerController instance;
     [Header("Player Settings")]
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float sprintMultiplier;
+    [SerializeField] private float drag;
     [Header("Map Bounds")]
     [SerializeField] private Transform mapCenter;
     [SerializeField] private float mapRadius;
@@ -34,7 +36,16 @@ public class PlayerController : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 movement = transform.forward * verticalInput + transform.right * horizontalInput;
-        player.Move(movement, Time.deltaTime);
+        bool isSprinting = Input.GetKey(KeyCode.LeftShift);
+        float currentSpeed = isSprinting ? moveSpeed * sprintMultiplier : moveSpeed;
+        if (inputDirection.magnitude > 0)
+        {
+            player.Move(inputDirection, currentSpeed, Time.deltaTime);
+        }
+        else
+        {
+            player.ApplyDrag(drag, Time.deltaTime);
+        }
         player.UpdateAnimation(animator,movement);
         player.KeepWithinUnitCircle(mapCenter.position, mapRadius);
     }

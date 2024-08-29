@@ -2868,6 +2868,10 @@ PrefabInstance:
       propertyPath: mapRadius
       value: 19
       objectReference: {fileID: 0}
+    - target: {fileID: 6471104715659129840, guid: 74dd67a1745d2244bb7c1436a8b3cc1e, type: 3}
+      propertyPath: sprintMultiplier
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
