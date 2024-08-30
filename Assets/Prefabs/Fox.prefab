@@ -95,7 +95,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2961358109159975925}
   - component: {fileID: 5211328674662066348}
-  - component: {fileID: 8223911862433420726}
+  - component: {fileID: 6496559844707373081}
+  - component: {fileID: 4616629495198405480}
   m_Layer: 0
   m_Name: Fox
   m_TagString: Enemy
@@ -142,28 +143,39 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!195 &8223911862433420726
-NavMeshAgent:
+--- !u!114 &6496559844707373081
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2758868919794136960}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.02
-  m_Speed: 3.5
-  m_Acceleration: 16
-  avoidancePriority: 50
-  m_AngularSpeed: 720
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 0.22
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0764055f49f374f46958c74fe1a73662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &4616629495198405480
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2758868919794136960}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.09364029, y: 0.16380619, z: 0.24403033}
+  m_Center: {x: -0.000000059604645, y: 0.08675008, z: 0.0077268286}
 --- !u!1 &6906531247610856943
 GameObject:
   m_ObjectHideFlags: 0

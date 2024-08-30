@@ -6,7 +6,7 @@ public class Player
     protected const float rotationSpeed = 720f;
     protected const float smoothTime = 0.1f;
     protected CharacterController characterController;
-    private Vector3 currentVelocity = Vector3.zero;
+    private Vector3 _currentVelocity = Vector3.zero;
 
     public Player(float moveSpeed, CharacterController characterController)
     {
@@ -17,15 +17,15 @@ public class Player
     public void Move(Vector3 direction, float speed, float deltaTime)
     {
         Vector3 movement = direction * speed * deltaTime;
-        currentVelocity = movement; // Update current velocity based on movement
+        _currentVelocity = movement; // Update current velocity based on movement
         characterController.Move(movement);
     }
 
     public void ApplyDrag(float drag, float deltaTime)
     {
         // Apply drag to the current velocity
-        currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, drag * deltaTime);
-        characterController.Move(currentVelocity * deltaTime);
+        _currentVelocity = Vector3.Lerp(_currentVelocity, Vector3.zero, drag * deltaTime);
+        characterController.Move(_currentVelocity * deltaTime);
     }
 
     public void RotateTowards(Vector3 targetPosition)
