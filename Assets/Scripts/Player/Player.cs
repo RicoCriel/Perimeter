@@ -3,10 +3,13 @@ using UnityEngine;
 public class Player
 {
     protected float moveSpeed;
-    protected const float rotationSpeed = 720f;
-    protected const float smoothTime = 0.1f;
+    protected const float RotationSpeed = 720f;
+    protected const float SmoothTime = 0.1f;
     protected CharacterController characterController;
     private Vector3 _currentVelocity = Vector3.zero;
+    private float _verticalVelocity;
+    private const float _gravity = -9.81f;
+
 
     public Player(float moveSpeed, CharacterController characterController)
     {
@@ -16,8 +19,21 @@ public class Player
 
     public void Move(Vector3 direction, float speed, float deltaTime)
     {
-        Vector3 movement = direction * speed * deltaTime;
-        _currentVelocity = movement; // Update current velocity based on movement
+        Vector3 horizontalMovement = direction * speed * deltaTime;
+
+        if (characterController.isGrounded)
+        {
+            _verticalVelocity = 0f; 
+        }
+        else
+        {
+            _verticalVelocity += _gravity * deltaTime; 
+        }
+
+        // Include vertical velocity in the movement vector
+        Vector3 movement = horizontalMovement + new Vector3(0, _verticalVelocity, 0);
+
+        _currentVelocity = movement;
         characterController.Move(movement);
     }
 
@@ -37,7 +53,7 @@ public class Player
         {
             float targetAngle = Mathf.Atan2(directionToFace.x, directionToFace.z) * Mathf.Rad2Deg;
             float currentAngle = characterController.transform.rotation.eulerAngles.y;
-            float smoothedAngle = Mathf.LerpAngle(currentAngle, targetAngle, rotationSpeed * Time.deltaTime);
+            float smoothedAngle = Mathf.LerpAngle(currentAngle, targetAngle, RotationSpeed * Time.deltaTime);
             characterController.transform.rotation = Quaternion.Euler(0, smoothedAngle, 0);
         }
     }
