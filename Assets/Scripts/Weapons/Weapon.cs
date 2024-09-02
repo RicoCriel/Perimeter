@@ -11,8 +11,9 @@ public abstract class Weapon : MonoBehaviour
     public abstract void Shoot();
     public abstract void Reload();
 
-    public virtual void Equip()
+    public virtual void Activate()
     {
         Debug.Log("Weapon equipped.");
     }
+
 }

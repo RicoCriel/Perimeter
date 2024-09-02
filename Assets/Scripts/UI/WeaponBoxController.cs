@@ -1,29 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WeaponBoxController : MonoBehaviour
 {
-    private Canvas weaponCanvas;
+    private Canvas _weaponCanvas;
+    private bool _playerInTrigger = false;
+    private bool _eventTriggered = false;
+
+    public UnityEvent OnWeaponBoxInteract;  
 
     private void Start()
     {
-        weaponCanvas = GetComponentInChildren<Canvas>();
-        weaponCanvas.enabled = false;
+        _weaponCanvas = GetComponentInChildren<Canvas>();
+        _weaponCanvas.enabled = false;
     }
+
+    private void Update()
+    {
+        if (_playerInTrigger && !_eventTriggered && Input.GetKeyDown(KeyCode.E))
+        {
+            OnWeaponBoxInteract?.Invoke();  
+            _eventTriggered = true;  
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            weaponCanvas.enabled = true;
+            _playerInTrigger = true;
+            _eventTriggered = false;  
+            Debug.Log("DisplayUI");
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            weaponCanvas.enabled = false;
+            _playerInTrigger = false;
+            Debug.Log("HideUI");
         }
     }
 }
