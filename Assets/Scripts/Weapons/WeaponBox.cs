@@ -2,17 +2,20 @@ using UnityEngine;
 
 public class WeaponBox : MonoBehaviour
 {
-    [SerializeField] private GameObject[] _weapons; 
-    [SerializeField] private int _selectedWeaponIndex; 
-    [SerializeField] private Transform _weaponPosition; 
+    [SerializeField] private GameObject[] _weapons;
+    [SerializeField] private int _selectedWeaponIndex;
+    [SerializeField] private Transform _weaponPosition;
 
-    private Animator _animator; 
-    private Animation _displayAnimation; 
-    private float _displayTimer; 
-    private int _animationCycleCounter; 
-    private int _animationCycleThreshold; 
+    private Animator _animator;
+    private Animation _displayAnimation;
+    private float _displayTimer;
+    private int _animationCycleCounter;
+    private int _animationCycleThreshold;
 
-    private bool _shouldOpenBox; 
+    private bool _shouldOpenBox = false;
+    private bool _canBuyWeapon = false;
+
+    public bool IsWeaponCycleDone => _canBuyWeapon;
 
     private void Start()
     {
@@ -29,6 +32,16 @@ public class WeaponBox : MonoBehaviour
     {
         _shouldOpenBox = true;
     }
+
+    public void Buy()
+    {
+        if(_canBuyWeapon)
+        {
+            BuyWeapon();
+            _canBuyWeapon=false;
+        }
+    }
+
     private void HandleWeaponBoxLogic()
     {
         if (_shouldOpenBox)
@@ -62,7 +75,7 @@ public class WeaponBox : MonoBehaviour
 
     private void OpenLid()
     {
-        _animator.Play("OpenBox");
+        _animator.Play("OpenLid");
     }
 
     private void CloseLid()
@@ -118,5 +131,14 @@ public class WeaponBox : MonoBehaviour
         }
 
         _weapons[_selectedWeaponIndex].SetActive(true);
+        _canBuyWeapon = true;
+    }
+
+    private void BuyWeapon()
+    {
+        Weapon selectedWeapon = _weapons[_selectedWeaponIndex].GetComponent<Weapon>();
+        WeaponInventory playerInventory = FindObjectOfType<WeaponInventory>();
+
+        playerInventory.EquipWeapon(selectedWeapon.weaponType);
     }
 }
