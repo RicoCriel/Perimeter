@@ -8,14 +8,15 @@ public class WeaponBox : MonoBehaviour
 
     private Animator _animator;
     private Animation _displayAnimation;
-    private float _displayTimer;
+    private float _timer;
+    private const float _animationClipLength = 4f;
     private int _animationCycleCounter;
     private int _animationCycleThreshold;
 
-    private bool _shouldOpenBox = false;
-    private bool _canBuyWeapon = false;
+    private bool _shouldOpenBox;
+    public bool CanBuyWeapon;
 
-    public bool IsWeaponCycleDone => _canBuyWeapon;
+    public bool IsWeaponCycleDone => CanBuyWeapon;
 
     private void Start()
     {
@@ -26,6 +27,7 @@ public class WeaponBox : MonoBehaviour
     private void Update()
     {
         HandleWeaponBoxLogic();
+        Debug.Log("CanBuyAWeapon:" + CanBuyWeapon);
     }
 
     public void Interact()
@@ -35,11 +37,7 @@ public class WeaponBox : MonoBehaviour
 
     public void Buy()
     {
-        if(_canBuyWeapon)
-        {
-            BuyWeapon();
-            _canBuyWeapon=false;
-        }
+        BuyWeapon();
     }
 
     private void HandleWeaponBoxLogic()
@@ -61,6 +59,7 @@ public class WeaponBox : MonoBehaviour
 
     private void DisableWeapons()
     {
+        CanBuyWeapon = false;
         for (int i = 0; i < _weapons.Length; i++)
         {
             _weapons[i].SetActive(false);
@@ -81,6 +80,7 @@ public class WeaponBox : MonoBehaviour
     private void CloseLid()
     {
         _animator.Play("CloseLid");
+        _displayAnimation.Stop("DisplayWeapon");
     }
 
     private void StartDisplayAnimation()
@@ -90,9 +90,9 @@ public class WeaponBox : MonoBehaviour
 
     private void UpdateWeaponDisplayCycle()
     {
-        _displayTimer += Time.deltaTime;
+        _timer += Time.deltaTime;
 
-        if (_displayTimer < 4f && _animationCycleCounter < _animationCycleThreshold)
+        if (_timer < _animationClipLength && _animationCycleCounter < _animationCycleThreshold)
         {
             _animationCycleCounter++;
         }
@@ -102,14 +102,6 @@ public class WeaponBox : MonoBehaviour
             RandomizeSelectedWeapon();
             _animationCycleThreshold++;
         }
-    }
-
-    private void ResetDisplayCycle()
-    {
-        _animationCycleCounter = 0;
-        _animationCycleThreshold = 0;
-        _displayTimer = 0;
-        DisableWeapons();
     }
 
     private void RandomizeSelectedWeapon()
@@ -123,7 +115,6 @@ public class WeaponBox : MonoBehaviour
         } while (newWeaponIndex == _selectedWeaponIndex);
 
         _selectedWeaponIndex = newWeaponIndex;
-
         // Deactivate all weapons and activate the selected one
         for (int i = 0; i < _weapons.Length; i++)
         {
@@ -131,7 +122,14 @@ public class WeaponBox : MonoBehaviour
         }
 
         _weapons[_selectedWeaponIndex].SetActive(true);
-        _canBuyWeapon = true;
+    }
+
+    private void ResetDisplayCycle()
+    {
+        _animationCycleCounter = 0;
+        _animationCycleThreshold = 0;
+        _timer = 0;
+        DisableWeapons();
     }
 
     private void BuyWeapon()
@@ -140,5 +138,7 @@ public class WeaponBox : MonoBehaviour
         WeaponInventory playerInventory = FindObjectOfType<WeaponInventory>();
 
         playerInventory.EquipWeapon(selectedWeapon.weaponType);
+        CloseLid();
     }
+
 }

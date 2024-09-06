@@ -198,6 +198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8515741636299390162}
   - component: {fileID: 7069329722696365226}
+  - component: {fileID: 531888981379217750}
   m_Layer: 0
   m_Name: WeaponHolder
   m_TagString: Untagged
@@ -241,6 +242,19 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &531888981379217750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2798859417095058706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54b57c4d46753f5449e9f6f689245baa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponBox: {fileID: 8284938731827920890}
 --- !u!1 &3793355668270987528
 GameObject:
   m_ObjectHideFlags: 0
@@ -786,27 +800,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       propertyPath: m_LocalScale.x
-      value: 8
+      value: 6.19688
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       propertyPath: m_LocalScale.y
-      value: 8
+      value: 6.19688
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       propertyPath: m_LocalScale.z
-      value: 8
+      value: 6.19688
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.09
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.16
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -3.97
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -893,6 +907,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8284938731827920890}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2828847859551602504}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1101213983977065740}
     - targetCorrespondingSourceObject: {fileID: -6107767629239136247, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3284955207043235733}
@@ -947,7 +967,71 @@ MonoBehaviour:
   - {fileID: 6917042634257532336}
   - {fileID: 206222875329485954}
   _selectedWeaponIndex: 0
-  _weaponPosition: {fileID: 3208932095289318405}
+  _weaponPosition: {fileID: 8515741636299390162}
+  CanBuyWeapon: 0
+--- !u!65 &2828847859551602504
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1768330208142600881}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.68, y: 0.19, z: 0.59}
+  m_Center: {x: 0, y: 0.09, z: 0.17}
+--- !u!114 &1101213983977065740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1768330208142600881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852bb5c4a0c708d4fbab0fac900d6611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnWeaponBoxInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8284938731827920890}
+        m_TargetAssemblyTypeName: WeaponBox, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnWeaponBoxBuy:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8284938731827920890}
+        m_TargetAssemblyTypeName: WeaponBox, Assembly-CSharp
+        m_MethodName: Buy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &2262738534960377735 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 805558916003215463, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
@@ -977,8 +1061,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.012153662, y: 0.0018689189, z: 0.0035000048}
-  m_Center: {x: 0, y: 0.00093445944, z: -4.0745363e-10}
+  m_Size: {x: 0.012153661, y: 0.0018689188, z: 0.01027953}
+  m_Center: {x: 3.6962008e-10, y: 0.0009344594, z: -0.00033649878}
 --- !u!1001 &5870341138010695676
 PrefabInstance:
   m_ObjectHideFlags: 0

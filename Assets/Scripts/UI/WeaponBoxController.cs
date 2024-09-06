@@ -3,7 +3,6 @@ using UnityEngine.Events;
 
 public class WeaponBoxController : MonoBehaviour
 {
-    private Canvas _weaponCanvas;
     private bool _playerInTrigger = false;
     private bool _openEventTriggered;
     private WeaponBox _weaponBox;
@@ -13,9 +12,7 @@ public class WeaponBoxController : MonoBehaviour
 
     private void Start()
     {
-        _weaponCanvas = GetComponentInChildren<Canvas>();
         _weaponBox = GetComponent<WeaponBox>(); 
-        _weaponCanvas.enabled = false;
     }
 
     private void Update()
@@ -26,8 +23,10 @@ public class WeaponBoxController : MonoBehaviour
             {
                 OnWeaponBoxInteract?.Invoke();
                 _openEventTriggered = true;
+                
             }
-            else if (_weaponBox.IsWeaponCycleDone)
+
+            if (_weaponBox.IsWeaponCycleDone)
             {
                 OnWeaponBoxBuy?.Invoke();
             }
@@ -39,7 +38,6 @@ public class WeaponBoxController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             _playerInTrigger = true;
-            Debug.Log("DisplayUI");
         }
     }
 
@@ -49,7 +47,6 @@ public class WeaponBoxController : MonoBehaviour
         {
             _playerInTrigger = false;
             _openEventTriggered = false;
-            Debug.Log("HideUI");
         }
     }
 }
