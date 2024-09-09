@@ -2327,6 +2327,17 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &1811884994 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8284938731827920890, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+  m_PrefabInstance: {fileID: 6788764317911971567}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f208d29ebf1ab419618f754feea738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1833151282
 GameObject:
   m_ObjectHideFlags: 0
@@ -5374,6 +5385,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+      propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+      propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+      propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1811884994}
+    - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+      propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+      propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Buy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+      propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: WeaponBox, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+      propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 1423575466226151435, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.09

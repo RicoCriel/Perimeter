@@ -27,7 +27,6 @@ public class WeaponBox : MonoBehaviour
     private void Update()
     {
         HandleWeaponBoxLogic();
-        Debug.Log("CanBuyAWeapon:" + CanBuyWeapon);
     }
 
     public void Interact()
@@ -38,6 +37,7 @@ public class WeaponBox : MonoBehaviour
     public void Buy()
     {
         BuyWeapon();
+        CanBuyWeapon = false;
     }
 
     private void HandleWeaponBoxLogic()
