@@ -1402,6 +1402,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03a03538884366c4a9024c1e37928b0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponBoxController: {fileID: 2014162945}
+  scoreManager: {fileID: 756627275}
+  scoreText: {fileID: 1229822790}
   activeChickens: []
 --- !u!1 &714267002
 GameObject:
@@ -1979,7 +1982,6 @@ GameObject:
   - component: {fileID: 1229822789}
   - component: {fileID: 1229822791}
   - component: {fileID: 1229822790}
-  - component: {fileID: 1229822792}
   m_Layer: 5
   m_Name: CurrentScore
   m_TagString: Untagged
@@ -2104,18 +2106,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1229822788}
   m_CullTransparentMesh: 1
---- !u!114 &1229822792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1229822788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8185250d562923d46a3f7ced62912d70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1247333285
 GameObject:
   m_ObjectHideFlags: 0
@@ -2969,6 +2959,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1423575466226151435, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
   m_PrefabInstance: {fileID: 6788764317911971567}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2014162945 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
+  m_PrefabInstance: {fileID: 6788764317911971567}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852bb5c4a0c708d4fbab0fac900d6611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2041239653
 GameObject:
   m_ObjectHideFlags: 0
@@ -5908,7 +5909,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
       propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
       propertyPath: OnWeaponBoxBuy.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -5961,7 +5962,7 @@ PrefabInstance:
     - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
       propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1811884994}
+      objectReference: {fileID: 756627274}
     - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
       propertyPath: OnWeaponBoxEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ShowInteractUI
@@ -5972,7 +5973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
       propertyPath: OnWeaponBoxInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ShowInteractUI
+      value: Interact
       objectReference: {fileID: 0}
     - target: {fileID: 1101213983977065740, guid: 17feea114bbe6a6408921fd5785a4240, type: 3}
       propertyPath: OnWeaponBoxBuy.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
