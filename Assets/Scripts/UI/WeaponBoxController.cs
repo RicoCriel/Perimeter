@@ -41,6 +41,10 @@ public class WeaponBoxController : MonoBehaviour
                 OnWeaponBoxInteract?.Invoke();  // Open the box and start the weapon cycle
                 _openEventTriggered = true;
             }
+            else
+            {
+                OnScoreDecrease?.Invoke(0);
+            }
         }
 
        // Only allow purchasing a weapon after the cycle completes

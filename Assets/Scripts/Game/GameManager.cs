@@ -12,9 +12,6 @@ public class GameManager : MonoBehaviour
     public ScoreManager scoreManager;
     public TextMeshProUGUI scoreText;
 
-    [Header("Animal related properties")]
-    public List<GameObject> activeChickens = new List<GameObject>();
-
     private void Awake()
     {
         if (Instance == null)
@@ -30,24 +27,5 @@ public class GameManager : MonoBehaviour
         {
             scoreManager.DecreaseScore(amount, scoreText);
         });
-    }
-
-    public void AddChicken(GameObject chicken)
-    {
-        activeChickens.Add(chicken);
-    }
-
-    public void RemoveChicken(GameObject chicken)
-    {
-        activeChickens.Remove(chicken);
-    }
-
-    public GameObject GetRandomChicken()
-    {
-        if (activeChickens.Count == 0)
-            return null;
-
-        int randomIndex = Random.Range(0, activeChickens.Count);
-        return activeChickens[randomIndex];
     }
 }

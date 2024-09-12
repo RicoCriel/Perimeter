@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class PlayerController : MonoBehaviour
     private CharacterController _characterController;
     private Animator _animator;
 
+    public TextMeshProUGUI ScoreText;
+
     private void Awake()
     {
         Instance = this;
@@ -33,6 +36,16 @@ public class PlayerController : MonoBehaviour
     {
         RotatePlayer();
         MovePlayer();
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            ScoreManager.Instance.IncreaseScore(50,ScoreText);
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            ScoreManager.Instance.DecreaseScore(50,ScoreText);
+        }
     }
 
     private void MovePlayer()
