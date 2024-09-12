@@ -1,13 +1,17 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WeaponBox : MonoBehaviour
 {
+    [Header("Weapon properties")]
     [SerializeField] private GameObject[] _weapons;
     [SerializeField] private int _selectedWeaponIndex;
     [SerializeField] private Transform _weaponPosition;
 
+    [Header("Animation properties")]
+    [SerializeField] private Animation _displayAnimation;
     private Animator _animator;
-    private Animation _displayAnimation;
+    private Canvas _boxCanvas;
     private float _timer;
     private const float _animationClipLength = 4f;
     private int _animationCycleCounter;
@@ -17,11 +21,13 @@ public class WeaponBox : MonoBehaviour
     public bool CanBuyWeapon;
 
     public bool IsWeaponCycleDone => CanBuyWeapon;
+    private const int _weaponBoxPrice = 150;
+    public int WeaponBoxPrice { get; } = _weaponBoxPrice;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
-        _displayAnimation = GetComponentInChildren<Animation>();
+        _boxCanvas = GetComponentInChildren<Canvas>(true);
     }
 
     private void Update()
@@ -139,6 +145,16 @@ public class WeaponBox : MonoBehaviour
 
         playerInventory.EquipWeapon(selectedWeapon.weaponType);
         CloseLid();
+    }
+
+    public void ShowInteractUI()
+    {
+        _boxCanvas.gameObject.SetActive(true);
+    }
+
+    public void HideInteractUI()
+    {
+        _boxCanvas.gameObject.SetActive(false);
     }
 
 }
