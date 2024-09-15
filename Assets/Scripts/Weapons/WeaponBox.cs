@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class WeaponBox : MonoBehaviour
 {
@@ -143,18 +144,39 @@ public class WeaponBox : MonoBehaviour
         Weapon selectedWeapon = _weapons[_selectedWeaponIndex].GetComponent<Weapon>();
         WeaponInventory playerInventory = FindObjectOfType<WeaponInventory>();
 
-        playerInventory.EquipWeapon(selectedWeapon.weaponType);
+        playerInventory.EquipWeaponObject(selectedWeapon.Type);
         CloseLid();
     }
 
     public void ShowInteractUI()
     {
+        // Set initial scale to 0 for the pop-up effect
+        _boxCanvas.transform.localScale = Vector3.zero;
         _boxCanvas.gameObject.SetActive(true);
+
+        // Animate the scale from 0 to 1 (pop-up effect)
+        _boxCanvas.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
+        //Fade in 
+        CanvasGroup canvasGroup = _boxCanvas.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.DOFade(1f, 0.3f);
+        }
     }
 
     public void HideInteractUI()
     {
-        _boxCanvas.gameObject.SetActive(false);
+        // Animate the scale down to 0 (disappear effect)
+        _boxCanvas.transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack)
+            .OnComplete(() => _boxCanvas.gameObject.SetActive(false)); 
+
+        CanvasGroup canvasGroup = _boxCanvas.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.DOFade(0f, 0.3f);
+        }
     }
 
 }

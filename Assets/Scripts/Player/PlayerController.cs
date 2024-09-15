@@ -37,12 +37,12 @@ public class PlayerController : MonoBehaviour
         RotatePlayer();
         MovePlayer();
 
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetKeyDown(KeyCode.KeypadPlus))
         {
             ScoreManager.Instance.IncreaseScore(50,ScoreText);
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(KeyCode.KeypadMinus))
         {
             ScoreManager.Instance.DecreaseScore(50,ScoreText);
         }

@@ -10,7 +10,6 @@ public class Player
     private float _verticalVelocity;
     private const float _gravity = -9.81f;
 
-
     public Player(float moveSpeed, CharacterController characterController)
     {
         this.moveSpeed = moveSpeed;

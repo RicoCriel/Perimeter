@@ -14,7 +14,8 @@ public class Weapon : MonoBehaviour
         SubmachineGun
     }
 
-    public WeaponType weaponType;
+    public WeaponType Type;
+    public WeaponConfiguration Configuration;
 }
 
 

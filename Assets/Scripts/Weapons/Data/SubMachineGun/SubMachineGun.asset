@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a4614e97861f74484b4bd247556f2e, type: 3}
+  m_Name: SubMachineGun
+  m_EditorClassIdentifier: 
+  WeaponModelPrefab: {fileID: 8604218648089134983, guid: fd409d5853470ec41b0f2bdc1a2d13e9, type: 3}
+  ShootConfig: {fileID: 11400000, guid: 3efb8b9f8ca427d40957e1e02b8a2fd7, type: 2}
+  TrailConfig: {fileID: 11400000, guid: b207ac8c1e4ab7643b4447240141706a, type: 2}

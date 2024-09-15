@@ -58,9 +58,6 @@ public class ScoreManager : MonoBehaviour
             });
     }
 
-
-
-
     private void UpdateScore(int score, TextMeshProUGUI scoreText)
     {
         scoreText.text = Score.ToString();
