@@ -59,8 +59,8 @@ public class WeaponInventory : MonoBehaviour
         if (weapon != null)
         {
             ActiveWeaponConfig = weapon.Configuration;
-            ActiveWeaponConfig.ActivateTrail(this);  // Activate the trail for the current weapon
-            Debug.Log($"Trail Ready: {ActiveWeaponConfig} ");
+            ActiveWeaponConfig.ActivateBulletTrail(this);  // Activate the trail for the current weapon
+            //Debug.Log($"Trail Ready: {ActiveWeaponConfig} ");
         }
         else
         {

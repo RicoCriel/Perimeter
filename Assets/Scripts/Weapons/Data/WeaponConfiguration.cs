@@ -1,13 +1,13 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using Random = UnityEngine.Random;
 
 [CreateAssetMenu(fileName = "WeaponConfiguration", menuName = "Weapons/WeaponConfiguration", order = 0)]
 public class WeaponConfiguration : ScriptableObject
 {
     //public ImpactType ImpactType;
-    //public GameObject WeaponModelPrefab;
     public ShootConfiguration ShootConfig;
     public TrailConfiguration TrailConfig;
 
@@ -15,12 +15,11 @@ public class WeaponConfiguration : ScriptableObject
     private float _lastShootTime;
     private ObjectPool<TrailRenderer> _trailPool;
 
-    public void ActivateTrail(MonoBehaviour activeMonoBehaviour)
+    public void ActivateBulletTrail(MonoBehaviour activeMonoBehaviour)
     {
         this._activeMonoBehaviour = activeMonoBehaviour;
         _lastShootTime = 0;
-        _trailPool = new ObjectPool<TrailRenderer>(CreateTrail);
-
+        _trailPool = new ObjectPool<TrailRenderer>(CreateBulletTrail);
     }
 
     public void Shoot(ParticleSystem shootSystem)
@@ -50,65 +49,75 @@ public class WeaponConfiguration : ScriptableObject
             if (Physics.Raycast(startPosition, shootDirection, out RaycastHit hit, float.MaxValue, ShootConfig.HitMask))
             {
                 // Start the bullet trail to the hit point
-                _activeMonoBehaviour.StartCoroutine(PlayTrail(startPosition, hit.point, hit));
+                _activeMonoBehaviour.StartCoroutine(PlayBulletTrail(startPosition, hit.point, hit));
             }
             else
             {
-                // No hit, so create a trail going forward into the distance
-                _activeMonoBehaviour.StartCoroutine(PlayTrail(
+                _activeMonoBehaviour.StartCoroutine(PlayBulletTrail(
                     startPosition,
                     startPosition + (shootDirection * TrailConfig.MissDistance),
                     new RaycastHit() // Empty hit info for a miss
-                ));
+                    ));
             }
         }
     }
 
+    public void StopShooting(ParticleSystem shootSystem)
+    {
+        if (shootSystem.isPlaying)
+        {
+            shootSystem.Stop();
+        }
+    }
 
-    private IEnumerator PlayTrail(Vector3 startPoint, Vector3 endPoint, RaycastHit hit)
+    private IEnumerator PlayBulletTrail(Vector3 startPoint, Vector3 endPoint, RaycastHit hit)
     {
         TrailRenderer instance = _trailPool.Get();
         instance.gameObject.SetActive(true);
         instance.transform.position = startPoint;
-        yield return null; // avoid previous trailrenderer artifacts
+        yield return null;
 
         instance.emitting = true;
 
         float distance = Vector3.Distance(startPoint, endPoint);
         float remainingDistance = distance;
+        bool released = false;
 
-        bool hasReleased = false;
-        while (remainingDistance > 0)
-        { 
-            instance.transform.position = Vector3.Lerp(startPoint, endPoint, 
-                Mathf.Clamp01(1 - remainingDistance/ distance));
+        try
+        {
+            while (remainingDistance > 0)
+            {
+                instance.transform.position = Vector3.Lerp(startPoint, endPoint,
+                    Mathf.Clamp01(1 - remainingDistance / distance));
 
-            remainingDistance -= TrailConfig.SimulationSpeed * Time.deltaTime;
+                remainingDistance -= TrailConfig.SimulationSpeed * Time.deltaTime;
 
-            yield return null;
+                yield return null;
+            }
 
             instance.transform.position = endPoint;
 
-            if(hit.collider != null)
+            if (hit.collider != null)
             {
-                //Handle impact
-                Debug.Log(hit.collider.name);
+                // Handle impact
             }
 
             yield return new WaitForSeconds(TrailConfig.Duration);
-            yield return null;
-            instance.emitting = false;
-            instance.gameObject.SetActive(false);
-
-            if (!hasReleased)
+        }
+        finally
+        {
+            if (!released)
             {
+                instance.emitting = false;
+                instance.gameObject.SetActive(false);
                 _trailPool.Release(instance);
-                hasReleased = true; // Set the flag to prevent further releases
+                released = true;
+                //Debug.Log("Released TrailRenderer back to pool");
             }
         }
     }
 
-    private TrailRenderer CreateTrail()
+    private TrailRenderer CreateBulletTrail()
     {
         GameObject instance = new GameObject("Bullet Trail");
         TrailRenderer trail = instance.AddComponent<TrailRenderer>();
@@ -119,7 +128,6 @@ public class WeaponConfiguration : ScriptableObject
         trail.minVertexDistance = TrailConfig.MinVertexDistance;
         trail.emitting = false;
         trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-
         return trail;
     }
 

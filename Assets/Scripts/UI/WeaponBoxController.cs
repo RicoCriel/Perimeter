@@ -6,7 +6,7 @@ public class WeaponBoxController : MonoBehaviour
     private bool _playerInTrigger = false;
     private bool _openEventTriggered;
     private WeaponBox _weaponBox;
-    private bool _weaponPurchased = false;  // Tracks if a weapon has been bought
+    private bool _weaponPurchased = false;  
 
     [Header("Interaction related events")]
     public UnityEvent OnWeaponBoxInteract;
@@ -38,7 +38,7 @@ public class WeaponBoxController : MonoBehaviour
             if (ScoreManager.Instance.Score >= _weaponBox.WeaponBoxPrice)
             {
                 OnScoreDecrease?.Invoke(_weaponBox.WeaponBoxPrice);
-                OnWeaponBoxInteract?.Invoke();  // Open the box and start the weapon cycle
+                OnWeaponBoxInteract?.Invoke();  
                 _openEventTriggered = true;
             }
             else
@@ -50,8 +50,8 @@ public class WeaponBoxController : MonoBehaviour
        // Only allow purchasing a weapon after the cycle completes
        if (_weaponBox.IsWeaponCycleDone && !_weaponPurchased)
        {
-            OnWeaponBoxBuy?.Invoke();  // Buy the weapon
-            _weaponPurchased = true;   // Mark weapon as purchased
+            OnWeaponBoxBuy?.Invoke();  
+            _weaponPurchased = true;   
        }
     }
 
@@ -70,15 +70,14 @@ public class WeaponBoxController : MonoBehaviour
         {
             _playerInTrigger = false;
             OnWeaponBoxExit?.Invoke();
-            // Only reset if the weapon has been purchased
-            if (_weaponPurchased)
+            
+            if(_weaponPurchased)
             {
-                ResetWeaponBox();  // Reset the interaction state after the player leaves the area
+                ResetWeaponBox();
             }
         }
     }
 
-    // Reset the state so the box can be used again in future interactions
     private void ResetWeaponBox()
     {
         _weaponPurchased = false;  // Allow buying another weapon after a full cycle
