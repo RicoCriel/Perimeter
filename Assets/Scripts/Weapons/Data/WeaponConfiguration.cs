@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
-using Random = UnityEngine.Random;
 
 [CreateAssetMenu(fileName = "WeaponConfiguration", menuName = "Weapons/WeaponConfiguration", order = 0)]
 public class WeaponConfiguration : ScriptableObject
@@ -31,7 +29,6 @@ public class WeaponConfiguration : ScriptableObject
             // Make sure the particle system is in the correct position
             shootSystem.Play();
 
-            // Generate random spread direction
             Vector3 spreadDirection = new Vector3(
                 Random.Range(-ShootConfig.Spread.x, ShootConfig.Spread.x),
                 Random.Range(-ShootConfig.Spread.y, ShootConfig.Spread.y),
@@ -45,10 +42,8 @@ public class WeaponConfiguration : ScriptableObject
             // Get the current world position of the particle system as the start point
             Vector3 startPosition = shootSystem.transform.position;
 
-            // Check if we hit something
             if (Physics.Raycast(startPosition, shootDirection, out RaycastHit hit, float.MaxValue, ShootConfig.HitMask))
             {
-                // Start the bullet trail to the hit point
                 _activeMonoBehaviour.StartCoroutine(PlayBulletTrail(startPosition, hit.point, hit));
             }
             else
@@ -64,10 +59,7 @@ public class WeaponConfiguration : ScriptableObject
 
     public void StopShooting(ParticleSystem shootSystem)
     {
-        if (shootSystem.isPlaying)
-        {
-            shootSystem.Stop();
-        }
+        shootSystem.Stop();
     }
 
     private IEnumerator PlayBulletTrail(Vector3 startPoint, Vector3 endPoint, RaycastHit hit)
@@ -112,7 +104,6 @@ public class WeaponConfiguration : ScriptableObject
                 instance.gameObject.SetActive(false);
                 _trailPool.Release(instance);
                 released = true;
-                //Debug.Log("Released TrailRenderer back to pool");
             }
         }
     }

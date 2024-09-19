@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class WeaponInventory : MonoBehaviour
 {
-    private Weapon currentWeapon;  // Reference to the currently equipped weapon
-    private Weapon[] weapons;      // Array of all weapons attached to the player
+    private Weapon currentWeapon;  
+    private Weapon[] weapons;      
     public WeaponConfiguration ActiveWeaponConfig;
     public ParticleSystem ActiveWeaponParticleSystem;
 
@@ -60,7 +60,6 @@ public class WeaponInventory : MonoBehaviour
         {
             ActiveWeaponConfig = weapon.Configuration;
             ActiveWeaponConfig.ActivateBulletTrail(this);  // Activate the trail for the current weapon
-            //Debug.Log($"Trail Ready: {ActiveWeaponConfig} ");
         }
         else
         {

@@ -44,7 +44,6 @@ public class PlayerAction : MonoBehaviour
         if (_fireModeActions[FireMode.StopFiring]())
         {
             activeWeaponConfig.StopShooting(WeaponInventory.Instance.ActiveWeaponParticleSystem);
-            //Debug.Log("Disabling MuzzleFlash");
         }
     }
 }
