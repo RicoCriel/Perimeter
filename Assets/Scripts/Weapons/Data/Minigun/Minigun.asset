@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a4614e97861f74484b4bd247556f2e, type: 3}
   m_Name: Minigun
   m_EditorClassIdentifier: 
-  WeaponModelPrefab: {fileID: 8053806928678358782, guid: fe2fc1438fb958149be70de27535e63c, type: 3}
+  ImpactType: {fileID: 11400000, guid: 020d5a0a6bd6db74c85f47604b5576ee, type: 2}
   ShootConfig: {fileID: 11400000, guid: def3496315ac4de4a80e57778fa0a8ed, type: 2}
   TrailConfig: {fileID: 11400000, guid: 1f779660e701d89468bc5a970a0fe3e0, type: 2}

@@ -16,7 +16,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _mapRadius;
 
     [Header("Mouse Input Settings")]
-    [SerializeField] private float _ignoreMouseRadius; 
+    [Range(0f, 15f)]
+    [SerializeField] private float _sensitivity;
+    [SerializeField] private bool _shouldInvertMouse;
 
     private Player _player;
     private CharacterController _characterController;
@@ -30,6 +32,8 @@ public class PlayerController : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
         _player = new Player(_moveSpeed, _characterController);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update()
@@ -72,27 +76,11 @@ public class PlayerController : MonoBehaviour
 
     private void RotatePlayer()
     {
-        Vector3 mouseWorldPosition = GetMouseWorldPosition();
-
-        // Check if the mouse position is within the ignore radius
-        if (Vector3.Distance(transform.position, mouseWorldPosition) > _ignoreMouseRadius)
+        float mouseX = Input.GetAxis("Mouse X");
+        if(_shouldInvertMouse)
         {
-            _player.RotateTowards(mouseWorldPosition);
+            mouseX = -mouseX;
         }
-    }
-
-    private Vector3 GetMouseWorldPosition()
-    {
-        Vector3 mouseScreenPosition = Input.mousePosition;
-        Ray ray = Camera.main.ScreenPointToRay(mouseScreenPosition);
-        Plane playerPlane = new Plane(Vector3.up, transform.position);
-        float distanceToPlane;
-
-        if (playerPlane.Raycast(ray, out distanceToPlane))
-        {
-            return ray.GetPoint(distanceToPlane);
-        }
-
-        return transform.position;
+        _player.Rotate(mouseX * _sensitivity);
     }
 }

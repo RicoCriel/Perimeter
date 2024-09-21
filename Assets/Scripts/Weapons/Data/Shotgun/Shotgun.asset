@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a4614e97861f74484b4bd247556f2e, type: 3}
   m_Name: Shotgun
   m_EditorClassIdentifier: 
-  WeaponModelPrefab: {fileID: 1752316499783749188, guid: 4bfc3f56c480d824bb3d79ab7f5b9aaf, type: 3}
+  ImpactType: {fileID: 11400000, guid: 020d5a0a6bd6db74c85f47604b5576ee, type: 2}
   ShootConfig: {fileID: 11400000, guid: fb47c557a07750a409bd5f6b04bf2f2b, type: 2}
   TrailConfig: {fileID: 11400000, guid: 1e1e5c26418038d42bc318b040d10df2, type: 2}

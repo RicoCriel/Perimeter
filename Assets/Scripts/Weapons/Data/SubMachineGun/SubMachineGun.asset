@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a4614e97861f74484b4bd247556f2e, type: 3}
   m_Name: SubMachineGun
   m_EditorClassIdentifier: 
-  WeaponModelPrefab: {fileID: 8604218648089134983, guid: fd409d5853470ec41b0f2bdc1a2d13e9, type: 3}
+  ImpactType: {fileID: 11400000, guid: 020d5a0a6bd6db74c85f47604b5576ee, type: 2}
   ShootConfig: {fileID: 11400000, guid: 3efb8b9f8ca427d40957e1e02b8a2fd7, type: 2}
   TrailConfig: {fileID: 11400000, guid: b207ac8c1e4ab7643b4447240141706a, type: 2}

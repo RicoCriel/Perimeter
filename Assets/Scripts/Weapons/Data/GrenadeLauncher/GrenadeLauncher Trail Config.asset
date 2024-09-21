@@ -46,6 +46,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  MaxAmount: 1
   Duration: 0.2
   MinVertexDistance: 0.1
   Color:

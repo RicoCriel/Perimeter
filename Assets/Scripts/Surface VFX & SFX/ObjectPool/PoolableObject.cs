@@ -3,10 +3,19 @@ using UnityEngine.Pool;
 
 public class PoolableObject : MonoBehaviour
 {
-    public ObjectPool Parent;
+    private ObjectPool<GameObject> parentPool;
 
-    public virtual void OnDisable()
+    // Set the pool when the object is retrieved
+    public void SetParentPool(ObjectPool<GameObject> pool)
     {
-        Parent.ReturnObjectToPool(this);
+        parentPool = pool;
+    }
+
+    public void ReturnToPool()
+    {
+        if (parentPool != null)
+        {
+            parentPool.Release(gameObject);
+        }
     }
 }

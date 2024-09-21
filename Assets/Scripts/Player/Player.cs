@@ -43,18 +43,17 @@ public class Player
         characterController.Move(_currentVelocity * deltaTime);
     }
 
-    public void RotateTowards(Vector3 targetPosition)
+    public void Rotate(float mouseX)
     {
-        Vector3 directionToFace = targetPosition - characterController.transform.position;
-        directionToFace.y = 0;
+        float rotationAmount = mouseX * RotationSpeed * Time.deltaTime;
 
-        if (directionToFace.magnitude > 0.8f)
-        {
-            float targetAngle = Mathf.Atan2(directionToFace.x, directionToFace.z) * Mathf.Rad2Deg;
-            float currentAngle = characterController.transform.rotation.eulerAngles.y;
-            float smoothedAngle = Mathf.LerpAngle(currentAngle, targetAngle, RotationSpeed * Time.deltaTime);
-            characterController.transform.rotation = Quaternion.Euler(0, smoothedAngle, 0);
-        }
+        // Smooth rotation interpolation
+        float currentAngle = characterController.transform.rotation.eulerAngles.y;
+        float targetAngle = currentAngle + rotationAmount;
+        float smoothedAngle = Mathf.LerpAngle(currentAngle, targetAngle, SmoothTime);
+
+        // Apply rotation
+        characterController.transform.rotation = Quaternion.Euler(0, smoothedAngle, 0);
     }
 
     public void KeepWithinUnitCircle(Vector3 center, float mapRadius)

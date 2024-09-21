@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 [CreateAssetMenu(fileName = "WeaponConfiguration", menuName = "Weapons/WeaponConfiguration", order = 0)]
 public class WeaponConfiguration : ScriptableObject
 {
-    //public ImpactType ImpactType;
+    public ImpactType ImpactType;
     public ShootConfiguration ShootConfig;
     public TrailConfiguration TrailConfig;
 
@@ -17,7 +17,7 @@ public class WeaponConfiguration : ScriptableObject
     {
         this._activeMonoBehaviour = activeMonoBehaviour;
         _lastShootTime = 0;
-        _trailPool = new ObjectPool<TrailRenderer>(CreateBulletTrail);
+        _trailPool = new ObjectPool<TrailRenderer>(CreateBulletTrail, maxSize: TrailConfig.MaxAmount);
     }
 
     public void Shoot(ParticleSystem shootSystem)
@@ -91,7 +91,7 @@ public class WeaponConfiguration : ScriptableObject
 
             if (hit.collider != null)
             {
-                // Handle impact
+                SurfaceManager.Instance.HandleImpact(hit.transform.gameObject, endPoint, hit.normal, ImpactType, 0);
             }
 
             yield return new WaitForSeconds(TrailConfig.Duration);

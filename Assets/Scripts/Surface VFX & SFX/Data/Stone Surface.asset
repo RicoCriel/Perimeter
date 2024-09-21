@@ -9,13 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61ec089b56ae5f546b4ddf785f7ed58f, type: 3}
-  m_Name: SubMachineGun Shoot Config
+  m_Script: {fileID: 11500000, guid: cdbebc6d98ed1e148b1958159ede3731, type: 3}
+  m_Name: Stone Surface
   m_EditorClassIdentifier: 
-  HitMask:
-    serializedVersion: 2
-    m_Bits: 257
-  Spread: {x: 0.05, y: 0.05, z: 0.05}
-  FireRate: 0.05
-  IsSingleFire: 0
-  IsAutomaticFire: 1
+  ImpactTypeEffects:
+  - ImpactType: {fileID: 11400000, guid: 020d5a0a6bd6db74c85f47604b5576ee, type: 2}
+    SurfaceEffect: {fileID: 11400000, guid: 7ea8a681c2bdd4646b2d2e471b55472e, type: 2}
