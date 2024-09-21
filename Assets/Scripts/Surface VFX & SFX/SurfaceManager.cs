@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class SurfaceManager : MonoBehaviour
 {
+    [Header("Surface Properties")]
     [SerializeField]
     private List<SurfaceType> Surfaces = new List<SurfaceType>();
     [SerializeField]
@@ -12,6 +14,9 @@ public class SurfaceManager : MonoBehaviour
     [SerializeField]
     private Surface _defaultSurface;
     [SerializeField] private Transform _pooledObjectsGroup;
+
+    [Header("Score Element Reference")]
+    [SerializeField] private TextMeshProUGUI _scoreText;
 
     private Dictionary<GameObject, Renderer> _rendererCache = new Dictionary<GameObject, Renderer>();
     private Dictionary<GameObject, ObjectPool<GameObject>> objectPools = new Dictionary<GameObject, ObjectPool<GameObject>>();
@@ -81,6 +86,10 @@ public class SurfaceManager : MonoBehaviour
                         if (typeEffect.ImpactType == Impact)
                         {
                             PlayEffects(HitPoint, HitNormal, typeEffect.SurfaceEffect, 1);
+                            if (surfaceType.Type == Type.Enemy)
+                            {
+                                ScoreManager.Instance.IncreaseScore(10, _scoreText);
+                            }
                         }
                     }
                 }

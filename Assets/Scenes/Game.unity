@@ -4041,6 +4041,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SurfaceManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6111647759664243463, guid: 1fd3b978751f4ec489384e5044ab3f6c, type: 3}
+      propertyPath: _scoreText
+      value: 
+      objectReference: {fileID: 1229822790}
+    - target: {fileID: 6111647759664243463, guid: 1fd3b978751f4ec489384e5044ab3f6c, type: 3}
+      propertyPath: Surfaces.Array.data[1].Type
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
