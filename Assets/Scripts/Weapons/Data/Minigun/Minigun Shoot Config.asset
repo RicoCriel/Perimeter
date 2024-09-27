@@ -19,3 +19,6 @@ MonoBehaviour:
   FireRate: 0.01
   IsSingleFire: 0
   IsAutomaticFire: 1
+  Recoil: 0.04
+  RecoilSpeed: 0.05
+  RecoilReturnSpeed: 0.05

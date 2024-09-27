@@ -10,11 +10,11 @@ public enum FireMode
 
 public class PlayerAction : MonoBehaviour
 {
-    private Dictionary<FireMode, System.Func<bool>> _fireModeActions;
+    private Dictionary<FireMode, System.Func<bool>> _fireModeInputActions;
 
     private void Start()
     {
-        _fireModeActions = new Dictionary<FireMode, System.Func<bool>>
+        _fireModeInputActions = new Dictionary<FireMode, System.Func<bool>>
         {
             { FireMode.SingleFire, () => Input.GetMouseButtonDown(0) },
             { FireMode.AutomaticFire, () => Input.GetMouseButton(0) },
@@ -30,20 +30,29 @@ public class PlayerAction : MonoBehaviour
     private void HandlePlayerFireInput()
     {
         var activeWeaponConfig = WeaponInventory.Instance.ActiveWeaponConfig;
-        var shootConfig = activeWeaponConfig.ShootConfig;
+        activeWeaponConfig.Tick(GetPlayerInput(), WeaponInventory.Instance.ActiveWeaponParticleSystem);
+    }
 
-        if (shootConfig.IsSingleFire && _fireModeActions[FireMode.SingleFire]())
+    private bool GetPlayerInput()
+    {
+        if (_fireModeInputActions[FireMode.SingleFire]())
         {
-            activeWeaponConfig.Shoot(WeaponInventory.Instance.ActiveWeaponParticleSystem);
-        }
-        else if (shootConfig.IsAutomaticFire && _fireModeActions[FireMode.AutomaticFire]())
-        {
-            activeWeaponConfig.Shoot(WeaponInventory.Instance.ActiveWeaponParticleSystem);
+            return true;  
         }
 
-        if (_fireModeActions[FireMode.StopFiring]())
+        if (_fireModeInputActions[FireMode.AutomaticFire]())
         {
-            activeWeaponConfig.StopShooting(WeaponInventory.Instance.ActiveWeaponParticleSystem);
+            return true;  
         }
+
+        if (_fireModeInputActions[FireMode.StopFiring]())
+        {
+            return false; 
+        }
+
+        return false; 
     }
 }
+
+
+

@@ -43,12 +43,12 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.KeypadPlus))
         {
-            ScoreManager.Instance.IncreaseScore(50,ScoreText);
+            ScoreManager.Instance.IncreaseScore(5000,ScoreText);
         }
 
         if (Input.GetKeyDown(KeyCode.KeypadMinus))
         {
-            ScoreManager.Instance.DecreaseScore(50,ScoreText);
+            ScoreManager.Instance.DecreaseScore(5000,ScoreText);
         }
     }
 

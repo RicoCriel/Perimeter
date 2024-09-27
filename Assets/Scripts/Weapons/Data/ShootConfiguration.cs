@@ -10,4 +10,8 @@ public class ShootConfiguration : ScriptableObject
     public float FireRate = 0.25f;
     public bool IsSingleFire;
     public bool IsAutomaticFire;
+
+    public float Recoil;
+    public float RecoilSpeed; 
+    public float RecoilReturnSpeed;
 }

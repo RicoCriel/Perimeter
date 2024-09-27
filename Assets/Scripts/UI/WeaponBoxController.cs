@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,7 +7,8 @@ public class WeaponBoxController : MonoBehaviour
     private bool _playerInTrigger = false;
     private bool _openEventTriggered;
     private WeaponBox _weaponBox;
-    private bool _weaponPurchased = false;  
+    private bool _weaponPurchased = false;
+    private Coroutine _resetCooldownCoroutine;
 
     [Header("Interaction related events")]
     public UnityEvent OnWeaponBoxInteract;
@@ -70,19 +72,35 @@ public class WeaponBoxController : MonoBehaviour
         {
             _playerInTrigger = false;
             OnWeaponBoxExit?.Invoke();
-            
-            if(_weaponPurchased)
+
+            if (_weaponPurchased)
             {
                 ResetWeaponBox();
+            }
+            else if (!_weaponPurchased)
+            {
+                if(_resetCooldownCoroutine != null)
+                {
+                    StopCoroutine(_resetCooldownCoroutine);
+                }
+                _resetCooldownCoroutine = StartCoroutine(ResetWeaponBoxCooldown());
             }
         }
     }
 
     private void ResetWeaponBox()
     {
-        _weaponPurchased = false;  // Allow buying another weapon after a full cycle
-        _openEventTriggered = false;  // Allow the box to be opened again on re-entry
+        _weaponPurchased = false;  
+        _openEventTriggered = false;  
     }
 
-    
+    private IEnumerator ResetWeaponBoxCooldown()
+    {
+        yield return new WaitForSeconds(2f);  
+
+        ResetWeaponBox();  
+        _resetCooldownCoroutine = null;  
+    }
+
+
 }

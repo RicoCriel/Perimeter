@@ -60,7 +60,7 @@ public class SurfaceManager : MonoBehaviour
                     {
                         if (typeEffect.ImpactType == Impact)
                         {
-                            PlayEffects(HitPoint, HitNormal, typeEffect.SurfaceEffect, activeTexture.Alpha);
+                            PlayEffects(HitPoint, HitNormal, typeEffect.SurfaceEffect, /*activeTexture.Alpha,*/ 1f);
                         }
                     }
                 }
@@ -85,7 +85,7 @@ public class SurfaceManager : MonoBehaviour
                     {
                         if (typeEffect.ImpactType == Impact)
                         {
-                            PlayEffects(HitPoint, HitNormal, typeEffect.SurfaceEffect, 1);
+                            PlayEffects(HitPoint, HitNormal, typeEffect.SurfaceEffect, 1f);
                             if (surfaceType.Type == Type.Enemy)
                             {
                                 ScoreManager.Instance.IncreaseScore(10, _scoreText);
@@ -250,7 +250,6 @@ public class SurfaceManager : MonoBehaviour
                     poolableObject.SetParentPool(pool);
                 }
 
-                // Apply random rotation if specified
                 if (spawnObjectEffect.RandomizeRotation)
                 {
                     Vector3 offset = new Vector3(
@@ -282,9 +281,12 @@ public class SurfaceManager : MonoBehaviour
             AudioSource audioSource = audioInstance.GetComponent<AudioSource>();
 
             audioInstance.transform.position = hitPoint;
-            audioSource.PlayOneShot(clip, soundOffset * Random.Range(playAudioEffect.VolumeRange.x, playAudioEffect.VolumeRange.y));
 
-            StartCoroutine(DisableAudioSource(audioInstance, clip.length, audioPool));
+            // Create variety with rapid hits
+            float randomPitch = Random.Range(0.7f, 1.1f);  
+            audioSource.pitch = randomPitch;
+            float randomVolume = Random.Range(playAudioEffect.VolumeRange.x, playAudioEffect.VolumeRange.y);
+            audioSource.PlayOneShot(clip, soundOffset * randomVolume);
         }
     }
 

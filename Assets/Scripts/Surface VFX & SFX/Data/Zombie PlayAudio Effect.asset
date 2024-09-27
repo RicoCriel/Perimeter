@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 481056ad067e59a4e87e389e784efd73, type: 3}
+  m_Name: Zombie PlayAudio Effect
+  m_EditorClassIdentifier: 
+  AudioSourcePrefab: {fileID: 2264523499500106004, guid: dd48829ac8c5fc6428ce03aff5eef2df, type: 3}
+  AudioClips:
+  - {fileID: 8300000, guid: 4333da19b9bd22347bf86fb10233852c, type: 3}
+  VolumeRange: {x: 1, y: 2}
