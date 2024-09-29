@@ -245,14 +245,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 8.933333
-    functionName: DisableBuy
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 8.933333
+  - time: 5.133333
     functionName: DisableBuy
     data: 
     objectReferenceParameter: {fileID: 0}

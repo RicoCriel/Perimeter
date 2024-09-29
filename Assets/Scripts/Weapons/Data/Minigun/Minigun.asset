@@ -15,3 +15,5 @@ MonoBehaviour:
   ImpactType: {fileID: 11400000, guid: 020d5a0a6bd6db74c85f47604b5576ee, type: 2}
   ShootConfig: {fileID: 11400000, guid: def3496315ac4de4a80e57778fa0a8ed, type: 2}
   TrailConfig: {fileID: 11400000, guid: 1f779660e701d89468bc5a970a0fe3e0, type: 2}
+  AmmoConfig: {fileID: 11400000, guid: 7d8fd6c28ed81f446bda14f08e0fa87f, type: 2}
+  AudioConfig: {fileID: 11400000, guid: cee5fa98b744c434e8eaa1132454285e, type: 2}

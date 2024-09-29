@@ -61,10 +61,10 @@ public class WeaponInventory : MonoBehaviour
             ActiveWeaponConfig = weapon.Configuration;
             ActiveWeaponConfig.ActivateBulletTrail(this);  // Activate the trail for the current weapon
         }
-        else
-        {
-            Debug.LogError($"Weapon of type {weaponType} not found in inventory.");
-        }
+        //else
+        //{
+        //    Debug.LogError($"Weapon of type {weaponType} not found in inventory.");
+        //}
     }
 
     public Weapon GetWeapon(Weapon.WeaponType weaponType)

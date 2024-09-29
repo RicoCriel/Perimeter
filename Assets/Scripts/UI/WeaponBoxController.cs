@@ -34,7 +34,6 @@ public class WeaponBoxController : MonoBehaviour
 
     private void HandleInteraction()
     {
-        // Only trigger interaction if the box is ready to open (and not purchased yet)
         if (!_openEventTriggered && !_weaponPurchased)
         {
             if (ScoreManager.Instance.Score >= _weaponBox.WeaponBoxPrice)
@@ -49,7 +48,6 @@ public class WeaponBoxController : MonoBehaviour
             }
         }
 
-       // Only allow purchasing a weapon after the cycle completes
        if (_weaponBox.IsWeaponCycleDone && !_weaponPurchased)
        {
             OnWeaponBoxBuy?.Invoke();  
@@ -101,6 +99,4 @@ public class WeaponBoxController : MonoBehaviour
         ResetWeaponBox();  
         _resetCooldownCoroutine = null;  
     }
-
-
 }

@@ -8,6 +8,7 @@ public class WeaponConfiguration : ScriptableObject
     public ImpactType ImpactType;
     public ShootConfiguration ShootConfig;
     public TrailConfiguration TrailConfig;
+    public AmmoConfiguration AmmoConfig;
     public AudioConfiguration AudioConfig;
 
     private MonoBehaviour _activeMonoBehaviour;
@@ -28,18 +29,30 @@ public class WeaponConfiguration : ScriptableObject
         _trailPool = new ObjectPool<TrailRenderer>(CreateBulletTrail, maxSize: TrailConfig.MaxAmount);
     }
 
+    public bool CanReload()
+    {
+        return AmmoConfig.CanReload();
+    }
+
+    public void Reload()
+    {
+        AmmoConfig.Reload();
+    }
+
     public void Tick(bool wantsToShoot, ParticleSystem shootSystem)
     {
         if(wantsToShoot)
         {
-            Shoot(shootSystem);
+            if(AmmoConfig.ClipAmmo > 0)
+            { 
+                Shoot(shootSystem);
+                HandleRecoil(shootSystem.transform.parent.parent, wantsToShoot);
+            }
         }
         else
         {
             StopShooting(shootSystem);
         }
-
-        HandleRecoil(shootSystem.transform.parent.parent, wantsToShoot);
     }
 
     public void Shoot(ParticleSystem shootSystem)
@@ -62,6 +75,7 @@ public class WeaponConfiguration : ScriptableObject
             shootDirection.Normalize();
             // Get the current world position of the particle system as the start point
             Vector3 startPosition = shootSystem.transform.position;
+            AmmoConfig.ClipAmmo --;
 
             if (Physics.Raycast(startPosition, shootDirection, out RaycastHit hit, float.MaxValue, ShootConfig.HitMask))
             {
