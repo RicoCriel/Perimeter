@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
 public enum FireMode
 {
     SingleFire,
@@ -11,18 +14,23 @@ public enum FireMode
 public class PlayerAction : MonoBehaviour
 {
     [SerializeField] private bool _shouldAutoReload;
-    [SerializeField] private Animator _playerAnimator;
-    private Dictionary<FireMode, System.Func<bool>> _fireModeInputActions;
+
+    public UnityEvent OnFire;
+    public UnityEvent OnStartReload;
+    public UnityEvent OnFinishReload;
+
+    private Dictionary<FireMode, Func<bool>> _fireModeInputActions;
     private bool _hasReloaded;
     private WeaponConfiguration _activeWeaponConfig;
+    private Coroutine _reloadRoutine;
 
     private void Start()
     {
-        _fireModeInputActions = new Dictionary<FireMode, System.Func<bool>>
+        _fireModeInputActions = new Dictionary<FireMode, Func<bool>>
         {
             { FireMode.SingleFire, () => Input.GetMouseButtonDown(0) },
             { FireMode.AutomaticFire, () => Input.GetMouseButton(0) },
-            { FireMode.StopFiring, () => Input.GetMouseButtonUp(0) },
+            { FireMode.StopFiring, () => Input.GetMouseButtonUp(0) }
         };
     }
 
@@ -30,9 +38,10 @@ public class PlayerAction : MonoBehaviour
     {
         _activeWeaponConfig = WeaponInventory.Instance.ActiveWeaponConfig;
         HandlePlayerFireInput(_activeWeaponConfig);
-        if (!_hasReloaded && (AutoReload(_activeWeaponConfig) || ManualReload(_activeWeaponConfig)))
+
+        if (_reloadRoutine == null && (!_hasReloaded && (AutoReload(_activeWeaponConfig) || ManualReload(_activeWeaponConfig))))
         {
-            _playerAnimator.SetTrigger("Reload");
+            _reloadRoutine = StartCoroutine(ReloadRoutine(_activeWeaponConfig));
         }
 
         if (_hasReloaded)
@@ -40,8 +49,14 @@ public class PlayerAction : MonoBehaviour
             FinishReload(_activeWeaponConfig);
         }
     }
+
     private void HandlePlayerFireInput(WeaponConfiguration activeWeaponConfig)
     {
+        if (_reloadRoutine != null)
+        {
+            return;
+        }
+
         activeWeaponConfig.Tick(GetPlayerInput(activeWeaponConfig), WeaponInventory.Instance.ActiveWeaponParticleSystem);
     }
 
@@ -49,49 +64,60 @@ public class PlayerAction : MonoBehaviour
     {
         if (_fireModeInputActions[FireMode.SingleFire]() && activeWeaponConfig.ShootConfig.IsSingleFire)
         {
-            return true;  
+            return true;
         }
 
         if (_fireModeInputActions[FireMode.AutomaticFire]() && activeWeaponConfig.ShootConfig.IsAutomaticFire)
         {
-            return true;  
+            return true;
         }
 
         if (_fireModeInputActions[FireMode.StopFiring]())
         {
-            return false; 
+            return false;
         }
 
-        return false; 
+        return false;
     }
 
     private bool ManualReload(WeaponConfiguration activeWeaponConfig)
     {
-        return !_hasReloaded 
+        return !_hasReloaded
             && Input.GetKeyUp(KeyCode.R)
             && activeWeaponConfig.CanReload();
     }
 
     private bool AutoReload(WeaponConfiguration activeWeaponConfig)
     {
-        return !_hasReloaded 
-            &&_shouldAutoReload
+        return !_hasReloaded
+            && _shouldAutoReload
             && activeWeaponConfig.AmmoConfig.ClipAmmo == 0
             && activeWeaponConfig.CanReload();
     }
 
     private void FinishReload(WeaponConfiguration activeWeaponConfig)
     {
-        activeWeaponConfig.Reload();
+        activeWeaponConfig.Reload(WeaponInventory.Instance.ActiveWeaponParticleSystem);
         _hasReloaded = false;
     }
 
-    public void EndReload()
+    private void StartReload()
     {
         _hasReloaded = true;
     }
 
+    private IEnumerator ReloadRoutine(WeaponConfiguration activeWeaponConfig)
+    {
+        float elapsedTime = 0f;
+        float reloadDuration = activeWeaponConfig.AmmoConfig.ReloadDuration;
+
+        while (elapsedTime < reloadDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        StartReload();
+        _reloadRoutine = null;
+    }
 }
-
-
-

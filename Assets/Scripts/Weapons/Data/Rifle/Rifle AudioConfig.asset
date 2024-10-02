@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c317c01b812e424e9a3dd07c3ceaa99, type: 3}
   m_Name: Rifle AudioConfig
   m_EditorClassIdentifier: 
-  Volume: 1
-  FireClips: []
-  EmptyClip: {fileID: 0}
-  ReloadClip: {fileID: 0}
-  LastBulletClip: {fileID: 0}
-  AudioSourcePrefab: {fileID: 2264523499500106004, guid: dd48829ac8c5fc6428ce03aff5eef2df, type: 3}
+  Volume: 0.5
+  FireClips:
+  - {fileID: 8300000, guid: 2e16dcbb7d8bf194cbab5c34bc9ecd24, type: 3}
+  - {fileID: 8300000, guid: b5d1072bec626e44495e167810cac076, type: 3}
+  - {fileID: 8300000, guid: 7f51e8ef75978784893c62fd9c40d4ef, type: 3}
+  EmptyClip: {fileID: 8300000, guid: 827a048cebd775f43abba4bb76059d5a, type: 3}
+  ReloadClip: {fileID: 8300000, guid: 8f170b3c4554b7c43ad8d86b4994254a, type: 3}
+  LastBulletClip: {fileID: 8300000, guid: 7724673a879c21947ae73a1a4d22cd93, type: 3}

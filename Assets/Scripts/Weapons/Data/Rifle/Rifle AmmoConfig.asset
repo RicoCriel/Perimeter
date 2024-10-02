@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Rifle AmmoConfig
   m_EditorClassIdentifier: 
   MaxAmmo: 120
-  ClipSize: 30
-  AvailableAmmo: 20
-  ClipAmmo: 27
+  ClipSize: 8
+  AvailableAmmo: 117
+  ClipAmmo: 8
+  ReloadDuration: 1

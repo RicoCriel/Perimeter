@@ -1,22 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WeaponBoxPurchase : MonoBehaviour
 {
-    private WeaponBox _weaponBox;
-
-    private void Awake()
+    public UnityEvent OnWeaponChosen;
+    public UnityEvent OnWeaponDropping;
+    private void EnableBuy()
     {
-        _weaponBox = GetComponentInParent<WeaponBox>();
-    }
-    public void EnableBuy()
-    {
-        _weaponBox.CanBuyWeapon = true;
+        OnWeaponChosen?.Invoke();
     }
 
-    public void DisableBuy()
+    private void DisableBuy()
     {
-        _weaponBox.CanBuyWeapon = false;
+        OnWeaponDropping?.Invoke();
     }
 }

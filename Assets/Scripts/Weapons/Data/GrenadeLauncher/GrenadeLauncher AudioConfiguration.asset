@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c317c01b812e424e9a3dd07c3ceaa99, type: 3}
   m_Name: GrenadeLauncher AudioConfiguration
   m_EditorClassIdentifier: 
-  Volume: 1
-  FireClips: []
-  EmptyClip: {fileID: 0}
-  ReloadClip: {fileID: 0}
-  LastBulletClip: {fileID: 0}
-  AudioSourcePrefab: {fileID: 5465835552864242312, guid: 054e4534c04d42a4f858b995e2701f0e, type: 3}
+  Volume: 0.5
+  FireClips:
+  - {fileID: 8300000, guid: 690ff74806f94c44f88e87ebf28f256f, type: 3}
+  - {fileID: 8300000, guid: 690ff74806f94c44f88e87ebf28f256f, type: 3}
+  - {fileID: 8300000, guid: 7cae15aeeba303e4b8231516bddd6af9, type: 3}
+  EmptyClip: {fileID: 8300000, guid: fffb7f2373fbbdd4595bedfd98225e27, type: 3}
+  ReloadClip: {fileID: 8300000, guid: 9b10e702002b9124483e48c329588f15, type: 3}
+  LastBulletClip: {fileID: 8300000, guid: 182f88bde2a896f4d8324a32105b1204, type: 3}

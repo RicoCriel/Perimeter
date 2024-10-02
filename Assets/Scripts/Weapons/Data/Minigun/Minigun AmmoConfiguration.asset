@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Minigun AmmoConfiguration
   m_EditorClassIdentifier: 
   MaxAmmo: 120
-  ClipSize: 30
+  ClipSize: 99
   AvailableAmmo: 120
-  ClipAmmo: 30
+  ClipAmmo: 99

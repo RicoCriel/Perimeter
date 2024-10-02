@@ -9,6 +9,7 @@ public class AmmoConfiguration : ScriptableObject
     public int ClipSize = 30;
     public int AvailableAmmo = 120;
     public int ClipAmmo = 30;
+    public float ReloadDuration;
 
     private void OnEnable()
     {

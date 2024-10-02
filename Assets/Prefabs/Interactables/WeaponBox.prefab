@@ -226,7 +226,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8515741636299390162}
   - component: {fileID: 7069329722696365226}
-  - component: {fileID: 531888981379217750}
   m_Layer: 0
   m_Name: WeaponHolder
   m_TagString: Untagged
@@ -270,18 +269,6 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &531888981379217750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2798859417095058706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54b57c4d46753f5449e9f6f689245baa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3793355668270987528
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,10 +895,10 @@ PrefabInstance:
       addedObject: {fileID: 321940941503208075}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8284938731827920890}
+      addedObject: {fileID: 2828847859551602504}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2828847859551602504}
+      addedObject: {fileID: 8284938731827920890}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 00c7035a8549703478f7e7862ed6afc1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1101213983977065740}
@@ -950,28 +937,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8284938731827920890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1768330208142600881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02f208d29ebf1ab419618f754feea738, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _weapons:
-  - {fileID: 3087296766900696024}
-  - {fileID: 603832547776953654}
-  - {fileID: 4958578651855693133}
-  - {fileID: 6917042634257532336}
-  - {fileID: 206222875329485954}
-  _selectedWeaponIndex: 0
-  _weaponPosition: {fileID: 8515741636299390162}
-  _displayAnimation: {fileID: 7069329722696365226}
-  CanBuyWeapon: 0
 --- !u!65 &2828847859551602504
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -993,6 +958,29 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.68, y: 0.19, z: 0.59}
   m_Center: {x: 0, y: 0.09, z: 0.17}
+--- !u!114 &8284938731827920890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1768330208142600881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f208d29ebf1ab419618f754feea738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weapons:
+  - {fileID: 3087296766900696024}
+  - {fileID: 603832547776953654}
+  - {fileID: 4958578651855693133}
+  - {fileID: 6917042634257532336}
+  - {fileID: 206222875329485954}
+  _selectedWeaponIndex: 0
+  _weaponPosition: {fileID: 8515741636299390162}
+  _displayAnimation: {fileID: 7069329722696365226}
+  OpenBox: 0
+  CanBuyWeapon: 0
 --- !u!114 &1101213983977065740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1039,6 +1027,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnWeaponBoxExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWeaponBoxCooldown:
     m_PersistentCalls:
       m_Calls: []
   OnScoreDecrease:

@@ -1,58 +1,66 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
+
 public class WeaponBoxController : MonoBehaviour
 {
-    private bool _playerInTrigger = false;
-    private bool _openEventTriggered;
-    private WeaponBox _weaponBox;
-    private bool _weaponPurchased = false;
-    private Coroutine _resetCooldownCoroutine;
+    private enum WeaponBoxState
+    {
+        Closed,
+        Open,
+        Closing,
+    }
+
+    private WeaponBoxState _currentState = WeaponBoxState.Closed;
 
     [Header("Interaction related events")]
     public UnityEvent OnWeaponBoxInteract;
     public UnityEvent OnWeaponBoxBuy;
     public UnityEvent OnWeaponBoxEnter;
     public UnityEvent OnWeaponBoxExit;
+    public UnityEvent OnWeaponBoxClosing;
 
     [Header("Ui related events")]
     public UnityEvent<int> OnScoreDecrease;
 
-    private void Awake()
-    {
-        _weaponBox = GetComponent<WeaponBox>();
-    }
+    private bool _playerInTrigger;
 
     private void Update()
     {
-        if (_playerInTrigger && Input.GetKeyDown(KeyCode.E))
+        if (_playerInTrigger)
         {
             HandleInteraction();
+            HandleWeaponBuying();
         }
     }
 
     private void HandleInteraction()
     {
-        if (!_openEventTriggered && !_weaponPurchased)
+        if(_currentState ==  WeaponBoxState.Closed)
         {
-            if (ScoreManager.Instance.Score >= _weaponBox.WeaponBoxPrice)
+            if (ScoreManager.Instance.Score >= WeaponBox.Instance.WeaponBoxPrice && Input.GetKeyDown(KeyCode.E))
             {
-                OnScoreDecrease?.Invoke(_weaponBox.WeaponBoxPrice);
-                OnWeaponBoxInteract?.Invoke();  
-                _openEventTriggered = true;
-            }
-            else
-            {
-                OnScoreDecrease?.Invoke(0);
+                OnWeaponBoxInteract?.Invoke();
+                OnScoreDecrease?.Invoke(WeaponBox.Instance.WeaponBoxPrice);
+                UpdateWeaponBoxState(WeaponBoxState.Open);
             }
         }
+    }
 
-       if (_weaponBox.IsWeaponCycleDone && !_weaponPurchased)
-       {
-            OnWeaponBoxBuy?.Invoke();  
-            _weaponPurchased = true;   
-       }
+    private void HandleWeaponBuying()
+    {
+        if (_currentState == WeaponBoxState.Open && Input.GetKeyDown(KeyCode.E))
+        {
+            if (WeaponBox.Instance.CanBuyWeapon)
+            {
+                OnWeaponBoxBuy?.Invoke();
+                OnScoreDecrease?.Invoke(WeaponBox.Instance.WeaponBoxPrice);
+                UpdateWeaponBoxState(WeaponBoxState.Closing);
+                return;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -60,7 +68,14 @@ public class WeaponBoxController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             _playerInTrigger = true;
-            OnWeaponBoxEnter?.Invoke();
+            if(_currentState == WeaponBoxState.Closed)
+            {
+                OnWeaponBoxEnter?.Invoke();
+            }
+            else if(_currentState == WeaponBoxState.Closing)
+            {
+                return;
+            }
         }
     }
 
@@ -70,33 +85,22 @@ public class WeaponBoxController : MonoBehaviour
         {
             _playerInTrigger = false;
             OnWeaponBoxExit?.Invoke();
-
-            if (_weaponPurchased)
-            {
-                ResetWeaponBox();
-            }
-            else if (!_weaponPurchased)
-            {
-                if(_resetCooldownCoroutine != null)
-                {
-                    StopCoroutine(_resetCooldownCoroutine);
-                }
-                _resetCooldownCoroutine = StartCoroutine(ResetWeaponBoxCooldown());
-            }
         }
     }
 
-    private void ResetWeaponBox()
+    private void ResetWeaponBoxState()
     {
-        _weaponPurchased = false;  
-        _openEventTriggered = false;  
+        UpdateWeaponBoxState(WeaponBoxState.Closed);
+        _playerInTrigger = false;
     }
 
-    private IEnumerator ResetWeaponBoxCooldown()
+    private void UpdateWeaponBoxState(WeaponBoxState newState)
     {
-        yield return new WaitForSeconds(2f);  
+        _currentState = newState;
+    }
 
-        ResetWeaponBox();  
-        _resetCooldownCoroutine = null;  
+    public void SetWeaponBoxClosingState()
+    {
+        UpdateWeaponBoxState(WeaponBoxState.Closing);
     }
 }

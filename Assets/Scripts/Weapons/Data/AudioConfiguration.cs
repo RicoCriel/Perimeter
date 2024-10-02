@@ -11,7 +11,6 @@ public class AudioConfiguration : ScriptableObject
     public AudioClip EmptyClip;
     public AudioClip ReloadClip;
     public AudioClip LastBulletClip;
-    public AudioSource AudioSourcePrefab;
 
     public void PlayShootingClip(AudioSource AudioSource, bool IsLastBullet)
     {

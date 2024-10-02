@@ -34,9 +34,10 @@ public class WeaponConfiguration : ScriptableObject
         return AmmoConfig.CanReload();
     }
 
-    public void Reload()
+    public void Reload(ParticleSystem shootSystem)
     {
         AmmoConfig.Reload();
+        AudioConfig.PlayReloadingClip(shootSystem.GetComponent<AudioSource>());
     }
 
     public void Tick(bool wantsToShoot, ParticleSystem shootSystem)
@@ -47,6 +48,10 @@ public class WeaponConfiguration : ScriptableObject
             { 
                 Shoot(shootSystem);
                 HandleRecoil(shootSystem.transform.parent.parent, wantsToShoot);
+            }
+            else
+            {
+                AudioConfig.PlayOutOfAmmoClip(shootSystem.GetComponent<AudioSource>());
             }
         }
         else
@@ -61,8 +66,8 @@ public class WeaponConfiguration : ScriptableObject
         {
             _lastShootTime = Time.time;
 
-            // Make sure the particle system is in the correct position
             shootSystem.Play();
+            AudioConfig.PlayShootingClip(shootSystem.GetComponent<AudioSource>(), AmmoConfig.ClipAmmo == 1);
 
             Vector3 spreadDirection = new Vector3(
                 Random.Range(-ShootConfig.Spread.x, ShootConfig.Spread.x),
@@ -70,10 +75,9 @@ public class WeaponConfiguration : ScriptableObject
                 Random.Range(-ShootConfig.Spread.z, ShootConfig.Spread.z)
             );
 
-            // Get the current forward direction from the weapon (shooting direction)
             Vector3 shootDirection = shootSystem.transform.parent.forward + spreadDirection;
             shootDirection.Normalize();
-            // Get the current world position of the particle system as the start point
+            
             Vector3 startPosition = shootSystem.transform.position;
             AmmoConfig.ClipAmmo --;
 
@@ -179,7 +183,6 @@ public class WeaponConfiguration : ScriptableObject
 
         float elapsedTime = 0;
 
-        // Lerp to recoil position
         while (elapsedTime < ShootConfig.RecoilSpeed)
         {
             weaponTransform.localPosition = Vector3.Lerp(originalPosition, recoilPosition, elapsedTime / ShootConfig.RecoilSpeed);
@@ -189,7 +192,6 @@ public class WeaponConfiguration : ScriptableObject
 
         weaponTransform.localPosition = recoilPosition;
 
-        // Lerp back to the original position
         elapsedTime = 0;
         while (elapsedTime < ShootConfig.RecoilReturnSpeed)
         {
