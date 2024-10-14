@@ -154,8 +154,8 @@ GameObject:
   - component: {fileID: 770795234456698907}
   - component: {fileID: 8868023637960227067}
   - component: {fileID: 3929804182280465183}
-  - component: {fileID: 8711334844367074516}
   - component: {fileID: 7329551025576329839}
+  - component: {fileID: 1427717315405503596}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -255,26 +255,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8711334844367074516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 324152287481352427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38e917c52987daa41af6a0305d9813c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _moveSpeed: 15
-  _sprintMultiplier: 1.5
-  _drag: 5
-  _mapCenter: {fileID: 0}
-  _mapRadius: 19
-  _sensitivity: 0
-  _shouldInvertMouse: 0
-  ScoreText: {fileID: 0}
 --- !u!114 &7329551025576329839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,7 +268,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActiveWeaponConfig: {fileID: 0}
-  ActiveWeaponParticleSystem: {fileID: 0}
+  ActiveWeaponShootSystem: {fileID: 0}
+--- !u!114 &1427717315405503596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324152287481352427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d56ce17bb1d215419c101fcb0726cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _moveSpeed: 15
+  _sprintMultiplier: 1.5
+  _drag: 5
+  _mapCenter: {fileID: 0}
+  _mapRadius: 19
+  _sensitivity: 5
+  _shouldInvertMouse: 0
+  ScoreText: {fileID: 0}
 --- !u!1 &865541788524426363
 GameObject:
   m_ObjectHideFlags: 0

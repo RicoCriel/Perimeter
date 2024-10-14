@@ -9,7 +9,7 @@ public class Weapon : MonoBehaviour
     {
         Shotgun,
         Rifle,
-        GrenadeLauncher,
+        Flamethrower,
         Minigun,
         SubmachineGun
     }

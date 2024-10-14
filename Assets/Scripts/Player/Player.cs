@@ -1,92 +1,97 @@
 using UnityEngine;
 
-public class Player
+public class Player: MonoBehaviour 
 {
-    protected float moveSpeed;
-    protected const float RotationSpeed = 720f;
-    protected const float SmoothTime = 0.1f;
-    protected CharacterController characterController;
+    protected const float _rotationSpeed = 360f;
+    protected const float _smoothTime = 0.1f;
+    protected CharacterController _characterController;
+    protected Animator _animator;
+
     private Vector3 _currentVelocity = Vector3.zero;
     private float _verticalVelocity;
-    private const float _gravity = -9.81f;
+    private readonly float _gravity = -9.81f;
 
-    public Player(float moveSpeed, CharacterController characterController)
+    protected void Initialize()
     {
-        this.moveSpeed = moveSpeed;
-        this.characterController = characterController;
+        _characterController = this.GetComponent<CharacterController>();
+        _animator = this.GetComponent<Animator>();
     }
 
-    public void Move(Vector3 direction, float speed, float deltaTime)
+    protected void Move(Vector3 direction, float speed)
     {
-        Vector3 horizontalMovement = direction * speed * deltaTime;
+        Vector3 horizontalMovement = direction * speed * Time.deltaTime;
 
-        if (characterController.isGrounded)
+        if (_characterController.isGrounded)
         {
             _verticalVelocity = 0f; 
         }
         else
         {
-            _verticalVelocity += _gravity * deltaTime; 
+            _verticalVelocity += _gravity * Time.deltaTime; 
         }
 
-        // Include vertical velocity in the movement vector
         Vector3 movement = horizontalMovement + new Vector3(0, _verticalVelocity, 0);
 
         _currentVelocity = movement;
-        characterController.Move(movement);
+        _characterController.Move(movement);
     }
 
-    public void ApplyDrag(float drag, float deltaTime)
+    protected void LookAtDirection(Vector3 direction)
     {
-        // Apply drag to the current velocity
-        _currentVelocity = Vector3.Lerp(_currentVelocity, Vector3.zero, drag * deltaTime);
-        characterController.Move(_currentVelocity * deltaTime);
-    }
-
-    public void Rotate(float mouseX)
-    {
-        float rotationAmount = mouseX * RotationSpeed * Time.deltaTime;
-
-        // Smooth rotation interpolation
-        float currentAngle = characterController.transform.rotation.eulerAngles.y;
-        float targetAngle = currentAngle + rotationAmount;
-        float smoothedAngle = Mathf.LerpAngle(currentAngle, targetAngle, SmoothTime);
-
-        // Apply rotation
-        characterController.transform.rotation = Quaternion.Euler(0, smoothedAngle, 0);
-    }
-
-    public void KeepWithinUnitCircle(Vector3 center, float mapRadius)
-    {
-        Vector3 offset = characterController.transform.position - center;
-        float distance = offset.magnitude;
-
-        // If the distance is greater than the radius
-        if (distance > mapRadius)
+        if (direction.sqrMagnitude > 0.01f) 
         {
-            // Normalize the offset to get the direction
-            Vector3 direction = offset.normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
 
-            // Calculate the target position at the edge of the circle
-            Vector3 targetPos = center + direction * mapRadius;
-
-            // Update the character's position to stay within bounds
-            characterController.transform.position = targetPos;
+            _characterController.transform.rotation = Quaternion.RotateTowards(
+                _characterController.transform.rotation,
+                targetRotation,
+                _rotationSpeed * Time.deltaTime
+            );
         }
     }
 
-    public void UpdateAnimation(Animator animator, Vector3 input)
+    protected void ApplyDrag(float drag)
     {
-        animator.SetFloat("Speed", input.magnitude);
+        _currentVelocity = Vector3.Lerp(_currentVelocity, Vector3.zero, drag * Time.deltaTime);
+        _characterController.Move(_currentVelocity * Time.deltaTime);
+    }
+
+    protected void Rotate(float inputX)
+    {
+        float rotationAmount = inputX * _rotationSpeed * Time.deltaTime;
+
+        float currentAngle = _characterController.transform.rotation.eulerAngles.y;
+        float targetAngle = currentAngle + rotationAmount;
+        float smoothedAngle = Mathf.LerpAngle(currentAngle, targetAngle, _smoothTime);
+
+        _characterController.transform.rotation = Quaternion.Euler(0, smoothedAngle, 0);
+    }
+
+    protected void KeepWithinUnitCircle(Vector3 center, float mapRadius)
+    {
+        Vector3 offset = _characterController.transform.position - center;
+        float distance = offset.magnitude;
+
+        if (distance > mapRadius)
+        {
+            Vector3 direction = offset.normalized;
+            Vector3 targetPos = center + direction * mapRadius;
+            _characterController.transform.position = targetPos;
+        }
+    }
+
+    protected void UpdateAnimation(Vector3 input)
+    {
+        _animator.SetFloat("Speed", input.magnitude);
     }
 
     public Vector3 Position
     {
-        get => characterController.transform.position;
+        get => _characterController.transform.position;
     }
 
     public Quaternion Rotation
     {
-        get => characterController.transform.rotation;
+        get => _characterController.transform.rotation;
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "AmmoConfiguration", menuName = "Weapons/AmmoConfiguration", order= 5)]

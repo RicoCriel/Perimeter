@@ -13,10 +13,7 @@ MonoBehaviour:
   m_Name: Shotgun AudioConfiguration
   m_EditorClassIdentifier: 
   Volume: 0.5
-  FireClips:
-  - {fileID: 8300000, guid: 9b10e702002b9124483e48c329588f15, type: 3}
-  - {fileID: 8300000, guid: fffb7f2373fbbdd4595bedfd98225e27, type: 3}
-  - {fileID: 8300000, guid: 6a8b815073d7b624195d0396b76d5078, type: 3}
-  EmptyClip: {fileID: 8300000, guid: 6a8b815073d7b624195d0396b76d5078, type: 3}
-  ReloadClip: {fileID: 8300000, guid: 6a8b815073d7b624195d0396b76d5078, type: 3}
-  LastBulletClip: {fileID: 8300000, guid: 6a8b815073d7b624195d0396b76d5078, type: 3}
+  FireClip: {fileID: 8300000, guid: f7418d27db74e9049b58e64f1270e109, type: 3}
+  EmptyClip: {fileID: 8300000, guid: 204384b254bbdac48941ac3a47eaf725, type: 3}
+  ReloadClip: {fileID: 8300000, guid: fdeecb393195acb4daa361fffbde6206, type: 3}
+  LastBulletClip: {fileID: 8300000, guid: 26898cb48253daa4e8d9bb290e7a9a32, type: 3}

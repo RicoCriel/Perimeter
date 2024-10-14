@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c317c01b812e424e9a3dd07c3ceaa99, type: 3}
+  m_Name: Flamethrower AudioConfiguration
+  m_EditorClassIdentifier: 
+  Volume: 0.5
+  FireClips:
+  - {fileID: 8300000, guid: 690ff74806f94c44f88e87ebf28f256f, type: 3}
+  - {fileID: 8300000, guid: 690ff74806f94c44f88e87ebf28f256f, type: 3}
+  - {fileID: 8300000, guid: 7cae15aeeba303e4b8231516bddd6af9, type: 3}
+  EmptyClip: {fileID: 8300000, guid: fffb7f2373fbbdd4595bedfd98225e27, type: 3}
+  ReloadClip: {fileID: 8300000, guid: 9b10e702002b9124483e48c329588f15, type: 3}
+  LastBulletClip: {fileID: 8300000, guid: 182f88bde2a896f4d8324a32105b1204, type: 3}

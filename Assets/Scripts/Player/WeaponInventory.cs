@@ -1,53 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeaponInventory : MonoBehaviour
 {
-    private Weapon currentWeapon;  
-    private Weapon[] weapons;      
+    private Weapon _currentWeapon;  
+    private Weapon[] _weapons;      
     public WeaponConfiguration ActiveWeaponConfig;
-    public ParticleSystem ActiveWeaponParticleSystem;
+    public ParticleSystem ActiveWeaponShootSystem;
 
-    public static WeaponInventory Instance;
+    public static WeaponInventory Instance { get; private set; }
 
     private void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
-        else
+        if(Instance != null)
         {
             Destroy(Instance);
         }
+        Instance = this;
     }
 
     private void Start()
     {
         // Find all weapon objects attached to the player (initially inactive)
-        weapons = GetComponentsInChildren<Weapon>(true);
+        _weapons = GetComponentsInChildren<Weapon>(true);
         EquipWeaponObject(Weapon.WeaponType.Rifle);  // Start with rifle
     }
 
     public void EquipWeaponObject(Weapon.WeaponType weaponType)
     {
         // Deactivate the current weapon if there is one
-        if (currentWeapon != null)
+        if (_currentWeapon != null)
         {
-            currentWeapon.gameObject.SetActive(false);
+            _currentWeapon.gameObject.SetActive(false);
         }
 
         // Find the new weapon to equip based on the weapon type
-        foreach (var weapon in weapons)
+        foreach (var weapon in _weapons)
         {
             if (weapon.Type == weaponType)
             {
-                currentWeapon = weapon;
-                currentWeapon.gameObject.SetActive(true);
-                EquipActiveWeaponConfiguration(currentWeapon.Type);
-                GetActiveWeaponParticleSystem(currentWeapon);
+                _currentWeapon = weapon;
+                _currentWeapon.gameObject.SetActive(true);
+                EquipActiveWeaponConfiguration(_currentWeapon.Type);
+                GetActiveWeaponParticleSystem(_currentWeapon);
                 return;
             }
         }
@@ -69,7 +63,7 @@ public class WeaponInventory : MonoBehaviour
 
     public Weapon GetWeapon(Weapon.WeaponType weaponType)
     {
-        foreach (var weapon in weapons)
+        foreach (var weapon in _weapons)
         {
             if (weapon.Type == weaponType)
             {
@@ -86,7 +80,7 @@ public class WeaponInventory : MonoBehaviour
 
     public ParticleSystem GetActiveWeaponParticleSystem(Weapon currentWeapon)
     {
-        ActiveWeaponParticleSystem = currentWeapon.gameObject.GetComponentInChildren<ParticleSystem>();
-        return ActiveWeaponParticleSystem;
+        ActiveWeaponShootSystem = currentWeapon.gameObject.GetComponentInChildren<ParticleSystem>();
+        return ActiveWeaponShootSystem;
     }
 }

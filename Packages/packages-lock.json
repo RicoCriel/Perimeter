@@ -69,6 +69,14 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.inputsystem": {
+      "version": "file:C:/Users/RicoC/OneDrive - Hogeschool West-Vlaanderen/Bureaublad/InputSystem-1.11.0/Packages/com.unity.inputsystem",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.modules.uielements": "1.0.0"
+      }
+    },
     "com.unity.performance.profile-analyzer": {
       "version": "1.2.2",
       "depth": 0,

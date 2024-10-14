@@ -13,10 +13,7 @@ MonoBehaviour:
   m_Name: SubMachineGun AudioConfiguration
   m_EditorClassIdentifier: 
   Volume: 0.5
-  FireClips:
-  - {fileID: 8300000, guid: fffb7f2373fbbdd4595bedfd98225e27, type: 3}
-  - {fileID: 8300000, guid: 6a8b815073d7b624195d0396b76d5078, type: 3}
-  - {fileID: 8300000, guid: f377eff7f9edf1f4c9fb7bfae9b8f67d, type: 3}
-  EmptyClip: {fileID: 8300000, guid: f377eff7f9edf1f4c9fb7bfae9b8f67d, type: 3}
-  ReloadClip: {fileID: 8300000, guid: 219ff95aac43d994e957734ae80449a2, type: 3}
-  LastBulletClip: {fileID: 8300000, guid: 9b10e702002b9124483e48c329588f15, type: 3}
+  FireClip: {fileID: 8300000, guid: 5abce86c2ca79574192a4b3b670c28a6, type: 3}
+  EmptyClip: {fileID: 8300000, guid: 76c7a3c4569a1474fa4384c63b0c2489, type: 3}
+  ReloadClip: {fileID: 8300000, guid: 78dea710bf5a6d640982a51639aafcfe, type: 3}
+  LastBulletClip: {fileID: 8300000, guid: 9e6f84826f11f6541af26ac8f27177bc, type: 3}

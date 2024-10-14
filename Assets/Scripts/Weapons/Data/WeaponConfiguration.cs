@@ -36,38 +36,35 @@ public class WeaponConfiguration : ScriptableObject
 
     public void Reload(ParticleSystem shootSystem)
     {
+        StopShooting(shootSystem);
         AmmoConfig.Reload();
-        AudioConfig.PlayReloadingClip(shootSystem.GetComponent<AudioSource>());
+        AudioConfig.PlayReloadingClip(shootSystem.GetComponent<AudioSource>(), ShootConfig.IsAutomaticFire);
     }
 
-    public void Tick(bool wantsToShoot, ParticleSystem shootSystem)
+    public void UpdateWeaponBehaviour(ParticleSystem shootSystem)
     {
-        if(wantsToShoot)
-        {
-            if(AmmoConfig.ClipAmmo > 0)
-            { 
-                Shoot(shootSystem);
-                HandleRecoil(shootSystem.transform.parent.parent, wantsToShoot);
-            }
-            else
-            {
-                AudioConfig.PlayOutOfAmmoClip(shootSystem.GetComponent<AudioSource>());
-            }
+        if(AmmoConfig.ClipAmmo > 0)
+        { 
+            Shoot(shootSystem);
         }
-        else
+        else if(AmmoConfig.ClipAmmo == 0)
         {
             StopShooting(shootSystem);
+            AudioConfig.PlayOutOfAmmoClip(shootSystem.GetComponent<AudioSource>(), ShootConfig.IsAutomaticFire);
+            return;
         }
     }
 
-    public void Shoot(ParticleSystem shootSystem)
+    private void Shoot(ParticleSystem shootSystem)
     {
         if (Time.time > ShootConfig.FireRate + _lastShootTime)
         {
             _lastShootTime = Time.time;
+            AudioSource audioSource = shootSystem.GetComponent<AudioSource>();
 
             shootSystem.Play();
-            AudioConfig.PlayShootingClip(shootSystem.GetComponent<AudioSource>(), AmmoConfig.ClipAmmo == 1);
+            AudioConfig.PlayShootingClip(audioSource, AmmoConfig.ClipAmmo == 1, ShootConfig.IsAutomaticFire, ShootConfig.FireRate);
+            HandleRecoil(shootSystem.transform.parent.parent, AmmoConfig.ClipAmmo < 0);
 
             Vector3 spreadDirection = new Vector3(
                 Random.Range(-ShootConfig.Spread.x, ShootConfig.Spread.x),
@@ -96,10 +93,20 @@ public class WeaponConfiguration : ScriptableObject
         }
     }
 
-    public void StopShooting(ParticleSystem shootSystem)
+    private void StopShooting(ParticleSystem shootSystem)
     {
-        shootSystem.Stop();
+        if (shootSystem.isPlaying)
+        {
+            shootSystem.Stop();
+        }
+
+        if (_isRecoiling && _recoilRoutine != null)
+        {
+            _activeMonoBehaviour.StopCoroutine(_recoilRoutine);
+            _isRecoiling = false;
+        }
     }
+
 
     private IEnumerator PlayBulletTrail(Vector3 startPoint, Vector3 endPoint, RaycastHit hit)
     {
@@ -161,9 +168,14 @@ public class WeaponConfiguration : ScriptableObject
         return trail;
     }
 
-    private void HandleRecoil(Transform weaponTransform, bool wantsToShoot)
+    private void HandleRecoil(Transform weaponTransform, bool isClipEmpty)
     {
-        if (wantsToShoot && !_isRecoiling)
+        if(isClipEmpty)
+        {
+            return;
+        }
+
+        if (!_isRecoiling)
         {
             if (_recoilRoutine != null)
             {

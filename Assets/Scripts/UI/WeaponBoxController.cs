@@ -38,15 +38,20 @@ public class WeaponBoxController : MonoBehaviour
 
     private void HandleInteraction()
     {
-        if(_currentState ==  WeaponBoxState.Closed)
-        {
-            if (ScoreManager.Instance.Score >= WeaponBox.Instance.WeaponBoxPrice && Input.GetKeyDown(KeyCode.E))
-            {
-                OnWeaponBoxInteract?.Invoke();
-                OnScoreDecrease?.Invoke(WeaponBox.Instance.WeaponBoxPrice);
-                UpdateWeaponBoxState(WeaponBoxState.Open);
-            }
-        }
+        //if (_currentState == WeaponBoxState.Closed)
+        //{
+        //    if (ScoreManager.Instance.Score >= WeaponBox.Instance.WeaponBoxPrice && Input.GetKeyDown(KeyCode.E))
+        //    {
+        //        OnWeaponBoxInteract?.Invoke();
+        //        OnScoreDecrease?.Invoke(WeaponBox.Instance.WeaponBoxPrice);
+        //        UpdateWeaponBoxState(WeaponBoxState.Open);
+        //    }
+        //    else if (ScoreManager.Instance.Score < WeaponBox.Instance.WeaponBoxPrice && Input.GetKeyDown(KeyCode.E))
+        //    {
+        //        OnScoreDecrease?.Invoke(0);
+        //        return;
+        //    }
+        //}
     }
 
     private void HandleWeaponBuying()

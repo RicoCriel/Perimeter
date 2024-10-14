@@ -5,23 +5,27 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     private int _score;
-    public static ScoreManager Instance;
+    public static ScoreManager Instance { get; private set; }
 
     public int Score
     {
         get { return _score; }
-        private set { _score = Mathf.Max(0, value); } // Ensure score doesn't go below 0
+        private set { _score = Mathf.Max(0, value); } 
     }
 
     private void Awake()
     {
+        if(Instance != null)
+        { 
+            Destroy(Instance);
+        }
         Instance = this;
     }
 
     public void IncreaseScore(int amount, TextMeshProUGUI scoreText)
     {
         AnimateScore(Score, Score + amount, scoreText);
-        Score += amount; // Update the actual score after the animation
+        Score += amount; 
         UpdateScore(Score, scoreText);
     }
 
@@ -42,11 +46,9 @@ public class ScoreManager : MonoBehaviour
             .SetEase(Ease.Linear)
             .OnComplete(() =>
             {
-                // When the score animation is complete, change color back to white
                 scoreText.DOColor(Color.white, 0.2f);
             });
 
-        // Animate color to green or red during the score animation
         scoreText.DOColor(targetColor, 0.2f);
 
         // Animate the scale of the text

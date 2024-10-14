@@ -1,38 +1,16 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
-public enum FireMode
-{
-    SingleFire,
-    AutomaticFire,
-    StopFiring
-}
 
 public class PlayerAction : MonoBehaviour
 {
     [SerializeField] private bool _shouldAutoReload;
+    [SerializeField] private PlayerInput _playerInput;
 
-    public UnityEvent OnFire;
-    public UnityEvent OnStartReload;
-    public UnityEvent OnFinishReload;
-
-    private Dictionary<FireMode, Func<bool>> _fireModeInputActions;
     private bool _hasReloaded;
     private WeaponConfiguration _activeWeaponConfig;
     private Coroutine _reloadRoutine;
-
-    private void Start()
-    {
-        _fireModeInputActions = new Dictionary<FireMode, Func<bool>>
-        {
-            { FireMode.SingleFire, () => Input.GetMouseButtonDown(0) },
-            { FireMode.AutomaticFire, () => Input.GetMouseButton(0) },
-            { FireMode.StopFiring, () => Input.GetMouseButtonUp(0) }
-        };
-    }
 
     private void Update()
     {
@@ -54,32 +32,25 @@ public class PlayerAction : MonoBehaviour
     {
         if (_reloadRoutine != null)
         {
-            return;
+            return; 
         }
 
-        activeWeaponConfig.Tick(GetPlayerInput(activeWeaponConfig), WeaponInventory.Instance.ActiveWeaponParticleSystem);
+        ParticleSystem shootSystem = WeaponInventory.Instance.ActiveWeaponShootSystem;
+
+        if(Mouse.current.leftButton.wasPressedThisFrame && activeWeaponConfig.ShootConfig.IsSingleFire)
+        {
+            activeWeaponConfig.UpdateWeaponBehaviour(shootSystem);
+        }
+        else if (Mouse.current.leftButton.IsActuated(0) && activeWeaponConfig.ShootConfig.IsAutomaticFire)
+        {
+            activeWeaponConfig.UpdateWeaponBehaviour(shootSystem);
+        }
+
+        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        {
+            activeWeaponConfig.UpdateWeaponBehaviour(shootSystem);
+        }
     }
-
-    private bool GetPlayerInput(WeaponConfiguration activeWeaponConfig)
-    {
-        if (_fireModeInputActions[FireMode.SingleFire]() && activeWeaponConfig.ShootConfig.IsSingleFire)
-        {
-            return true;
-        }
-
-        if (_fireModeInputActions[FireMode.AutomaticFire]() && activeWeaponConfig.ShootConfig.IsAutomaticFire)
-        {
-            return true;
-        }
-
-        if (_fireModeInputActions[FireMode.StopFiring]())
-        {
-            return false;
-        }
-
-        return false;
-    }
-
     private bool ManualReload(WeaponConfiguration activeWeaponConfig)
     {
         return !_hasReloaded
@@ -97,7 +68,7 @@ public class PlayerAction : MonoBehaviour
 
     private void FinishReload(WeaponConfiguration activeWeaponConfig)
     {
-        activeWeaponConfig.Reload(WeaponInventory.Instance.ActiveWeaponParticleSystem);
+        activeWeaponConfig.Reload(WeaponInventory.Instance.ActiveWeaponShootSystem);
         _hasReloaded = false;
     }
 
@@ -120,4 +91,5 @@ public class PlayerAction : MonoBehaviour
         StartReload();
         _reloadRoutine = null;
     }
+
 }

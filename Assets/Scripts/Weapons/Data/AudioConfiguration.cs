@@ -1,44 +1,71 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AudioConfiguration", menuName = "Weapons/AudioConfiguration", order = 4)]
 public class AudioConfiguration : ScriptableObject
 {
     [Range(0f, 1f)]
     public float Volume = 1.0f;
-    public AudioClip[] FireClips;
+    public AudioClip FireClip;
     public AudioClip EmptyClip;
     public AudioClip ReloadClip;
     public AudioClip LastBulletClip;
-
-    public void PlayShootingClip(AudioSource AudioSource, bool IsLastBullet)
+    
+    public void PlayShootingClip(AudioSource audioSource, bool isLastBullet, bool isAutomaticFire, float fireRate)
     {
-        if(IsLastBullet && LastBulletClip != null)
-        { 
-            AudioSource.PlayOneShot(LastBulletClip, Volume);
+        if (isAutomaticFire)
+        {
+            if (!audioSource.isPlaying)
+            {
+                audioSource.clip = FireClip;
+                audioSource.loop = true; 
+                audioSource.volume = Volume;
+                audioSource.Play();
+            }
         }
         else
         {
-            AudioSource.PlayOneShot(FireClips[Random.Range(0, FireClips.Length)], Volume);
+            if (isLastBullet && LastBulletClip != null)
+            {
+                audioSource.PlayOneShot(LastBulletClip, Volume);
+            }
+            else
+            {
+                audioSource.PlayOneShot(FireClip, Volume);
+            }
         }
     }
 
-    public void PlayOutOfAmmoClip(AudioSource AudioSource)
+    public void PlayOutOfAmmoClip(AudioSource audioSource, bool isAutomaticFire)
     {
-        if(EmptyClip != null)
+        if (isAutomaticFire && EmptyClip != null)
         {
-            AudioSource.PlayOneShot(EmptyClip, Volume);
+            if (!audioSource.isPlaying)
+            {
+                audioSource.clip = EmptyClip;
+                audioSource.loop = true;
+                audioSource.volume = Volume;
+                audioSource.Play();
+            }
+        }
+        else if (EmptyClip != null)
+        {
+            audioSource.PlayOneShot(EmptyClip, Volume);
         }
     }
 
-    public void PlayReloadingClip(AudioSource AudioSource)
+    public void PlayReloadingClip(AudioSource audioSource, bool isAutomaticFire)
     {
-        if(ReloadClip != null)
+        if (ReloadClip != null)
         {
-            AudioSource.PlayOneShot(ReloadClip, Volume);
+            audioSource.PlayOneShot(ReloadClip, Volume);
         }
     }
 
-
+    public void StopShootingClip(AudioSource audioSource, bool isAutomaticFire)
+    {
+        if (isAutomaticFire && audioSource.isPlaying)
+        {
+            audioSource.loop = false; 
+            audioSource.Stop();      
+        }
+    }
 }

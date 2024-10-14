@@ -13,10 +13,7 @@ MonoBehaviour:
   m_Name: Minigun AudioConfiguration
   m_EditorClassIdentifier: 
   Volume: 0.5
-  FireClips:
-  - {fileID: 8300000, guid: 9b10e702002b9124483e48c329588f15, type: 3}
-  - {fileID: 8300000, guid: 9b10e702002b9124483e48c329588f15, type: 3}
-  - {fileID: 8300000, guid: 6a8b815073d7b624195d0396b76d5078, type: 3}
-  EmptyClip: {fileID: 8300000, guid: 219ff95aac43d994e957734ae80449a2, type: 3}
-  ReloadClip: {fileID: 8300000, guid: 219ff95aac43d994e957734ae80449a2, type: 3}
-  LastBulletClip: {fileID: 8300000, guid: 510d8fd2882bb2348a360694652453c1, type: 3}
+  FireClip: {fileID: 8300000, guid: 23854889b46f9444ab52b0f797ec6d1a, type: 3}
+  EmptyClip: {fileID: 8300000, guid: 811498ee2c63b8d4b927a86e70aa6149, type: 3}
+  ReloadClip: {fileID: 8300000, guid: 194da7de379d7d94eb490c858d4b21cc, type: 3}
+  LastBulletClip: {fileID: 8300000, guid: 0e30cdc9c518f9f48b0bd4d937b32c81, type: 3}
