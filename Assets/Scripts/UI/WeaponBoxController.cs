@@ -36,27 +36,27 @@ public class WeaponBoxController : MonoBehaviour
         }
     }
 
-    private void HandleInteraction()
+    public void HandleInteraction()
     {
-        //if (_currentState == WeaponBoxState.Closed)
-        //{
-        //    if (ScoreManager.Instance.Score >= WeaponBox.Instance.WeaponBoxPrice && Input.GetKeyDown(KeyCode.E))
-        //    {
-        //        OnWeaponBoxInteract?.Invoke();
-        //        OnScoreDecrease?.Invoke(WeaponBox.Instance.WeaponBoxPrice);
-        //        UpdateWeaponBoxState(WeaponBoxState.Open);
-        //    }
-        //    else if (ScoreManager.Instance.Score < WeaponBox.Instance.WeaponBoxPrice && Input.GetKeyDown(KeyCode.E))
-        //    {
-        //        OnScoreDecrease?.Invoke(0);
-        //        return;
-        //    }
-        //}
+        if (_currentState == WeaponBoxState.Closed && WeaponBox.Instance.ShouldInteract)
+        {
+            if (ScoreManager.Instance.Score >= WeaponBox.Instance.WeaponBoxPrice)
+            {
+                OnWeaponBoxInteract?.Invoke();
+                OnScoreDecrease?.Invoke(WeaponBox.Instance.WeaponBoxPrice);
+                UpdateWeaponBoxState(WeaponBoxState.Open);
+            }
+            else if (ScoreManager.Instance.Score < WeaponBox.Instance.WeaponBoxPrice)
+            {
+                OnScoreDecrease?.Invoke(0);
+                return;
+            }
+        }
     }
 
-    private void HandleWeaponBuying()
+    public void HandleWeaponBuying()
     {
-        if (_currentState == WeaponBoxState.Open && Input.GetKeyDown(KeyCode.E))
+        if (_currentState == WeaponBoxState.Open && WeaponBox.Instance.ShouldInteract)
         {
             if (WeaponBox.Instance.CanBuyWeapon)
             {

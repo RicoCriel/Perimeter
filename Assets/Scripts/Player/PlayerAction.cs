@@ -37,19 +37,19 @@ public class PlayerAction : MonoBehaviour
 
         ParticleSystem shootSystem = WeaponInventory.Instance.ActiveWeaponShootSystem;
 
-        if(Mouse.current.leftButton.wasPressedThisFrame && activeWeaponConfig.ShootConfig.IsSingleFire)
-        {
-            activeWeaponConfig.UpdateWeaponBehaviour(shootSystem);
-        }
-        else if (Mouse.current.leftButton.IsActuated(0) && activeWeaponConfig.ShootConfig.IsAutomaticFire)
-        {
-            activeWeaponConfig.UpdateWeaponBehaviour(shootSystem);
-        }
+        //if(Mouse.current.leftButton.wasPressedThisFrame && activeWeaponConfig.ShootConfig.IsSingleFire)
+        //{
+        //    activeWeaponConfig.Tick(shootSystem);
+        //}
+        //else if (Mouse.current.leftButton.IsActuated(0) && activeWeaponConfig.ShootConfig.IsAutomaticFire)
+        //{
+        //    activeWeaponConfig.Tick(shootSystem);
+        //}
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
-        {
-            activeWeaponConfig.UpdateWeaponBehaviour(shootSystem);
-        }
+        //if (Mouse.current.leftButton.wasReleasedThisFrame)
+        //{
+        //    activeWeaponConfig.Tick(shootSystem);
+        //}
     }
     private bool ManualReload(WeaponConfiguration activeWeaponConfig)
     {

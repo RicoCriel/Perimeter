@@ -24,6 +24,7 @@ public class WeaponBox : MonoBehaviour
 
     private const int _weaponBoxPrice = 150;
     public int WeaponBoxPrice { get; } = _weaponBoxPrice;
+    public bool ShouldInteract;
 
     private void Awake()
     {

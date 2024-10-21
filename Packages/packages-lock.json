@@ -1,11 +1,27 @@
 {
   "dependencies": {
+    "com.gasgiant.camera-shake": {
+      "version": "https://github.com/gasgiant/Camera-Shake.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ab8159a3f352235d2eb7f1c604d2a199700a643a"
+    },
     "com.unity.ai.navigation": {
       "version": "1.1.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.ai": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.cinemachine": {
+      "version": "2.10.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.31"
       },
       "url": "https://packages.unity.com"
     },

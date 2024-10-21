@@ -5,12 +5,19 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     private int _score;
+    private int _zombieHitPoint = 15;
     public static ScoreManager Instance { get; private set; }
 
     public int Score
     {
         get { return _score; }
         private set { _score = Mathf.Max(0, value); } 
+    }
+
+    public int ZombieHitPoint
+    {
+        get { return _zombieHitPoint; }
+        private set { _zombieHitPoint = value; }
     }
 
     private void Awake()

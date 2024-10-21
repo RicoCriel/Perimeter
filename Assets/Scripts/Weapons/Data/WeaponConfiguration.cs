@@ -14,6 +14,9 @@ public class WeaponConfiguration : ScriptableObject
     private MonoBehaviour _activeMonoBehaviour;
     private float _lastShootTime;
     private bool _isRecoiling;
+    private bool _hasPlayedEmptyClip;
+
+    private Vector3 _originalPosition;
     private ObjectPool<TrailRenderer> _trailPool;
     private Coroutine _recoilRoutine;
 
@@ -36,22 +39,52 @@ public class WeaponConfiguration : ScriptableObject
 
     public void Reload(ParticleSystem shootSystem)
     {
-        StopShooting(shootSystem);
+        AudioSource audioSource = shootSystem.GetComponent<AudioSource>();
+        StopWeaponEffects(shootSystem);
         AmmoConfig.Reload();
-        AudioConfig.PlayReloadingClip(shootSystem.GetComponent<AudioSource>(), ShootConfig.IsAutomaticFire);
+        AudioConfig.PlayReloadingClip(audioSource);
+        _hasPlayedEmptyClip = false;
     }
 
-    public void UpdateWeaponBehaviour(ParticleSystem shootSystem)
+    public void FireWeapon(ParticleSystem shootSystem, bool wantsToShoot)
     {
-        if(AmmoConfig.ClipAmmo > 0)
-        { 
+        AudioSource audioSource = shootSystem.GetComponent<AudioSource>();
+
+        if(!wantsToShoot)
+        {
+            HandleInactiveWeapon(shootSystem, audioSource);
+            return;
+        }
+
+        if (AmmoConfig.ClipAmmo > 0 && wantsToShoot)
+        {
             Shoot(shootSystem);
         }
-        else if(AmmoConfig.ClipAmmo == 0)
+        else if(AmmoConfig.ClipAmmo == 0 && wantsToShoot)
         {
-            StopShooting(shootSystem);
-            AudioConfig.PlayOutOfAmmoClip(shootSystem.GetComponent<AudioSource>(), ShootConfig.IsAutomaticFire);
-            return;
+            HandleEmptyWeapon(shootSystem, audioSource);
+        }
+    }
+
+    private void HandleEmptyWeapon(ParticleSystem shootSystem, AudioSource audioSource)
+    {
+        StopWeaponEffects(shootSystem);
+        AudioConfig.StopAudio(audioSource);
+
+        if (!audioSource.isPlaying && !_hasPlayedEmptyClip)
+        {
+            AudioConfig.PlayOutOfAmmoClip(audioSource);
+            _hasPlayedEmptyClip = true;
+        }
+    }
+
+    private void HandleInactiveWeapon(ParticleSystem shootSystem, AudioSource audioSource)
+    {
+        _hasPlayedEmptyClip = false;
+        StopWeaponEffects(shootSystem);
+        if (ShootConfig.IsAutomaticFire)
+        {
+            AudioConfig.StopAudio(audioSource);
         }
     }
 
@@ -63,8 +96,7 @@ public class WeaponConfiguration : ScriptableObject
             AudioSource audioSource = shootSystem.GetComponent<AudioSource>();
 
             shootSystem.Play();
-            AudioConfig.PlayShootingClip(audioSource, AmmoConfig.ClipAmmo == 1, ShootConfig.IsAutomaticFire, ShootConfig.FireRate);
-            HandleRecoil(shootSystem.transform.parent.parent, AmmoConfig.ClipAmmo < 0);
+            AudioConfig.PlayShootingClip(audioSource, AmmoConfig.ClipAmmo == 1, ShootConfig.IsAutomaticFire);
 
             Vector3 spreadDirection = new Vector3(
                 Random.Range(-ShootConfig.Spread.x, ShootConfig.Spread.x),
@@ -74,7 +106,7 @@ public class WeaponConfiguration : ScriptableObject
 
             Vector3 shootDirection = shootSystem.transform.parent.forward + spreadDirection;
             shootDirection.Normalize();
-            
+
             Vector3 startPosition = shootSystem.transform.position;
             AmmoConfig.ClipAmmo --;
 
@@ -90,23 +122,24 @@ public class WeaponConfiguration : ScriptableObject
                     new RaycastHit() 
                     ));
             }
+
+            HandleRecoil(shootSystem.transform.parent.parent);
         }
     }
 
-    private void StopShooting(ParticleSystem shootSystem)
+    private void StopWeaponEffects(ParticleSystem shootSystem)
     {
         if (shootSystem.isPlaying)
         {
             shootSystem.Stop();
         }
 
-        if (_isRecoiling && _recoilRoutine != null)
+        if (_isRecoiling || _recoilRoutine != null)
         {
             _activeMonoBehaviour.StopCoroutine(_recoilRoutine);
             _isRecoiling = false;
         }
     }
-
 
     private IEnumerator PlayBulletTrail(Vector3 startPoint, Vector3 endPoint, RaycastHit hit)
     {
@@ -168,9 +201,9 @@ public class WeaponConfiguration : ScriptableObject
         return trail;
     }
 
-    private void HandleRecoil(Transform weaponTransform, bool isClipEmpty)
+    private void HandleRecoil(Transform weaponTransform)
     {
-        if(isClipEmpty)
+        if(AmmoConfig.ClipAmmo <= 0)
         {
             return;
         }
@@ -190,30 +223,32 @@ public class WeaponConfiguration : ScriptableObject
     {
         _isRecoiling = true;
 
-        Vector3 originalPosition = weaponTransform.localPosition;
-        Vector3 recoilPosition = originalPosition + new Vector3(ShootConfig.Recoil, 0, 0); 
+        _originalPosition = weaponTransform.localPosition;
+        Vector3 offset = new Vector3(ShootConfig.Recoil, 0, 0);
+        Vector3 recoilPosition = _originalPosition + offset;
 
         float elapsedTime = 0;
 
         while (elapsedTime < ShootConfig.RecoilSpeed)
         {
-            weaponTransform.localPosition = Vector3.Lerp(originalPosition, recoilPosition, elapsedTime / ShootConfig.RecoilSpeed);
+            weaponTransform.localPosition = Vector3.Lerp(_originalPosition, recoilPosition, elapsedTime / ShootConfig.RecoilSpeed);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         weaponTransform.localPosition = recoilPosition;
 
-        elapsedTime = 0;
         while (elapsedTime < ShootConfig.RecoilReturnSpeed)
         {
-            weaponTransform.localPosition = Vector3.Lerp(recoilPosition, originalPosition, elapsedTime / ShootConfig.RecoilReturnSpeed);
+            weaponTransform.localPosition = Vector3.Lerp(recoilPosition, _originalPosition, elapsedTime / ShootConfig.RecoilReturnSpeed);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        weaponTransform.localPosition = originalPosition;
+        weaponTransform.localPosition = _originalPosition;
+
         _isRecoiling = false;
+        _recoilRoutine = null;
     }
 
 }

@@ -33,12 +33,12 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Automatic Fire",
+                    "name": "Auto Fire",
                     "type": "Button",
                     "id": "2daa7891-c9d8-4985-8512-4f379cc3f37c",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Hold",
+                    "interactions": "",
                     "initialStateCheck": true
                 },
                 {
@@ -55,6 +55,24 @@
                     "type": "Button",
                     "id": "848fdb7e-b4b7-4983-9489-f059adce3f53",
                     "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Aim",
+                    "type": "Button",
+                    "id": "13b270af-0bfa-4957-a9f0-565fa80ccccb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Adjust Weapon",
+                    "type": "Value",
+                    "id": "75090c08-6c7e-4640-83f5-f6f15dc58634",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -188,7 +206,7 @@
                     "path": "<Mouse>/delta/x",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Rotate",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -222,7 +240,7 @@
                     "interactions": "Hold",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Automatic Fire",
+                    "action": "Auto Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -233,7 +251,7 @@
                     "interactions": "Hold",
                     "processors": "",
                     "groups": "",
-                    "action": "Automatic Fire",
+                    "action": "Auto Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -243,7 +261,18 @@
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Gamepad",
+                    "action": "Single Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c5c29f42-3ebf-44cd-9e47-faf6bea5d952",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Single Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -251,22 +280,66 @@
                 {
                     "name": "",
                     "id": "65cd57c8-febb-4250-b88c-f5d1bd8de653",
-                    "path": "",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "df4ea6fe-2704-449e-80ce-ff023479032d",
-                    "path": "",
+                    "id": "8783d39e-f6e3-4f04-b92c-8a2f6f54b3cc",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Gamepad",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fb898893-33e5-409d-aadc-5aa5851a4446",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8eab18d0-0dce-4339-af17-74fe13d623dc",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ede92284-ade0-4a75-9baa-100be575d4e0",
+                    "path": "<Gamepad>/rightStick/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Adjust Weapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1af73677-c758-4fd5-9aef-8cd762cb432e",
+                    "path": "<Mouse>/delta/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Adjust Weapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxAmmo: 120
   ClipSize: 8
-  AvailableAmmo: 117
-  ClipAmmo: 8
+  AvailableAmmo: 120
+  ClipAmmo: 1000
   ReloadDuration: 1

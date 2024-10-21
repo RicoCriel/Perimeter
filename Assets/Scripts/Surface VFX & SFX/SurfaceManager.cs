@@ -312,6 +312,7 @@ public class SurfaceManager : MonoBehaviour
         if (poolableObject != null)
         {
             poolableObject.ReturnToPool();
+            DisableAudioSource(instance,duration, pool);
         }
         else
         {

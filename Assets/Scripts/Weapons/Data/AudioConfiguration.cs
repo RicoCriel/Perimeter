@@ -9,7 +9,7 @@ public class AudioConfiguration : ScriptableObject
     public AudioClip ReloadClip;
     public AudioClip LastBulletClip;
     
-    public void PlayShootingClip(AudioSource audioSource, bool isLastBullet, bool isAutomaticFire, float fireRate)
+    public void PlayShootingClip(AudioSource audioSource, bool isLastBullet, bool isAutomaticFire)
     {
         if (isAutomaticFire)
         {
@@ -34,25 +34,18 @@ public class AudioConfiguration : ScriptableObject
         }
     }
 
-    public void PlayOutOfAmmoClip(AudioSource audioSource, bool isAutomaticFire)
+    public void PlayOutOfAmmoClip(AudioSource audioSource)
     {
-        if (isAutomaticFire && EmptyClip != null)
+        if (EmptyClip != null)
         {
             if (!audioSource.isPlaying)
             {
-                audioSource.clip = EmptyClip;
-                audioSource.loop = true;
-                audioSource.volume = Volume;
-                audioSource.Play();
+                audioSource.PlayOneShot(EmptyClip, Volume);
             }
-        }
-        else if (EmptyClip != null)
-        {
-            audioSource.PlayOneShot(EmptyClip, Volume);
         }
     }
 
-    public void PlayReloadingClip(AudioSource audioSource, bool isAutomaticFire)
+    public void PlayReloadingClip(AudioSource audioSource)
     {
         if (ReloadClip != null)
         {
@@ -60,9 +53,9 @@ public class AudioConfiguration : ScriptableObject
         }
     }
 
-    public void StopShootingClip(AudioSource audioSource, bool isAutomaticFire)
+    public void StopAudio(AudioSource audioSource)
     {
-        if (isAutomaticFire && audioSource.isPlaying)
+        if (audioSource.isPlaying)
         {
             audioSource.loop = false; 
             audioSource.Stop();      
