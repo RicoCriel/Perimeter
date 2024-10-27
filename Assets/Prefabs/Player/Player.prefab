@@ -154,7 +154,6 @@ GameObject:
   - component: {fileID: 770795234456698907}
   - component: {fileID: 8868023637960227067}
   - component: {fileID: 3929804182280465183}
-  - component: {fileID: 7329551025576329839}
   - component: {fileID: 1427717315405503596}
   m_Layer: 3
   m_Name: Player
@@ -255,20 +254,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7329551025576329839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 324152287481352427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73897c438d52e3f4aa9d39af757e3ab9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ActiveWeaponConfig: {fileID: 0}
-  ActiveWeaponShootSystem: {fileID: 0}
 --- !u!114 &1427717315405503596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,11 +269,14 @@ MonoBehaviour:
   _moveSpeed: 15
   _sprintMultiplier: 1.5
   _drag: 5
-  _mapCenter: {fileID: 0}
-  _mapRadius: 19
-  _sensitivity: 5
-  _shouldInvertMouse: 0
-  ScoreText: {fileID: 0}
+  _sensitivity: 1
+  _shouldInvertX: 0
+  _shouldAutoReload: 0
+  _aimingReticle: {fileID: 0}
+  PrimaryActions: {fileID: 0}
+  OnFire:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &865541788524426363
 GameObject:
   m_ObjectHideFlags: 0

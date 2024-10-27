@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,9 +20,6 @@ public class WeaponBoxController : MonoBehaviour
     public UnityEvent OnWeaponBoxExit;
     public UnityEvent OnWeaponBoxClosing;
 
-    [Header("Ui related events")]
-    public UnityEvent<int> OnScoreDecrease;
-
     private bool _playerInTrigger;
 
     private void Update()
@@ -43,12 +38,12 @@ public class WeaponBoxController : MonoBehaviour
             if (ScoreManager.Instance.Score >= WeaponBox.Instance.WeaponBoxPrice)
             {
                 OnWeaponBoxInteract?.Invoke();
-                OnScoreDecrease?.Invoke(WeaponBox.Instance.WeaponBoxPrice);
+                ScoreManager.Instance.DecreaseScore(WeaponBox.Instance.WeaponBoxPrice);
                 UpdateWeaponBoxState(WeaponBoxState.Open);
             }
             else if (ScoreManager.Instance.Score < WeaponBox.Instance.WeaponBoxPrice)
             {
-                OnScoreDecrease?.Invoke(0);
+                ScoreManager.Instance.DecreaseScore(0);
                 return;
             }
         }
@@ -61,7 +56,7 @@ public class WeaponBoxController : MonoBehaviour
             if (WeaponBox.Instance.CanBuyWeapon)
             {
                 OnWeaponBoxBuy?.Invoke();
-                OnScoreDecrease?.Invoke(WeaponBox.Instance.WeaponBoxPrice);
+                ScoreManager.Instance.DecreaseScore(WeaponBox.Instance.WeaponBoxPrice);
                 UpdateWeaponBoxState(WeaponBoxState.Closing);
                 return;
             }

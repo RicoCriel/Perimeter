@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
@@ -23,6 +22,10 @@ public class PlayerActions : Player
     [Header("Aiming Settings")]
     [SerializeField] private GameObject _aimingReticle;
 
+    [Header("Map Settings")]
+    [SerializeField] private Transform _mapCenter;
+    [SerializeField] private float _mapRadius;
+
     public InputActionAsset PrimaryActions;
     private InputActionMap _gameplayActionMap;
     private InputAction _moveInputAction;
@@ -31,16 +34,14 @@ public class PlayerActions : Player
     private InputAction _singleFireInputAction;
     private InputAction _automaticFireInputAction;
     private InputAction _interactInputAction;
+    private InputAction _aimInputAction;
+    private InputAction _reloadInputAction;
 
-    private Vector2 _input;
+    private Vector2 _moveInput;
     private float _angle;
     private bool _shouldSprint;
-    private bool _hasReloaded;
 
-    private Coroutine _reloadRoutine;
     private Coroutine _autoFireCoroutine; 
-    public TextMeshProUGUI ScoreText;
-
     public UnityEvent OnFire;
 
     private void Awake()
@@ -68,6 +69,18 @@ public class PlayerActions : Player
         ApplyRotation();
     }
 
+    private void FindInputActions()
+    {
+        _moveInputAction = _gameplayActionMap.FindAction("Move");
+        _sprintInputAction = _gameplayActionMap.FindAction("Sprint");
+        _singleFireInputAction = _gameplayActionMap.FindAction("Single Fire");
+        _automaticFireInputAction = _gameplayActionMap.FindAction("Auto Fire");
+        _interactInputAction = _gameplayActionMap.FindAction("Interact");
+        _rotateInputAction = _gameplayActionMap.FindAction("Rotate");
+        _reloadInputAction = _gameplayActionMap.FindAction("Reload");
+        _aimInputAction = _gameplayActionMap.FindAction("Aim");
+    }
+
     private void EnableInputActions(bool isEnabled)
     {
         if (isEnabled)
@@ -77,6 +90,8 @@ public class PlayerActions : Player
             _singleFireInputAction.Enable();
             _automaticFireInputAction.Enable();
             _interactInputAction.Enable();
+            _reloadInputAction.Enable();
+            _aimInputAction.Enable();
         }
         else
         {
@@ -85,17 +100,9 @@ public class PlayerActions : Player
             _singleFireInputAction.Disable();
             _automaticFireInputAction.Disable();
             _interactInputAction.Disable();
+            _reloadInputAction.Disable();
+            _aimInputAction.Disable();
         }
-    }
-
-    private void FindInputActions()
-    {
-        _moveInputAction = _gameplayActionMap.FindAction("Move");
-        _sprintInputAction = _gameplayActionMap.FindAction("Sprint");
-        _singleFireInputAction = _gameplayActionMap.FindAction("Single Fire");
-        _automaticFireInputAction = _gameplayActionMap.FindAction("Auto Fire");
-        _interactInputAction = _gameplayActionMap.FindAction("Interact");
-        _rotateInputAction = _gameplayActionMap.FindAction("Rotate");
     }
 
     private void SubscribeInputActionEvents()
@@ -106,6 +113,8 @@ public class PlayerActions : Player
         _singleFireInputAction.performed += OnSingleFirePerformed;
         _automaticFireInputAction.started += OnAutoFirePerformed;
         _interactInputAction.performed += OnInteractPerformed;
+        _reloadInputAction.performed += OnReloadCanceled;
+        _aimInputAction.performed += OnAimPerformed;
 
         _sprintInputAction.canceled += OnSprintPerformed;
         _moveInputAction.canceled += OnMoveCanceled;
@@ -113,6 +122,8 @@ public class PlayerActions : Player
         _singleFireInputAction.canceled += OnSingleFirePerformed;
         _automaticFireInputAction.canceled += OnAutoFireCanceled;
         _interactInputAction.canceled += OnInteractCanceled;
+        _reloadInputAction.canceled += OnReloadCanceled;
+        _aimInputAction.canceled += OnAimPerformed;
     }
 
     private void UnsubscribeInputActionEvents()
@@ -123,16 +134,17 @@ public class PlayerActions : Player
         _singleFireInputAction.performed -= OnSingleFirePerformed;
         _automaticFireInputAction.started -= OnAutoFirePerformed;
         _interactInputAction.performed -= OnInteractPerformed;
+        _aimInputAction.performed -= OnAimPerformed;    
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        _input = context.ReadValue<Vector2>();
+        _moveInput = context.ReadValue<Vector2>();
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
-        _input = Vector2.zero;
+        _moveInput = Vector2.zero;
     }
 
     private void OnRotatePerformed(InputAction.CallbackContext context)
@@ -147,9 +159,18 @@ public class PlayerActions : Player
 
     private void OnSprintPerformed(InputAction.CallbackContext context)
     {
-        _shouldSprint = PlayerHelper.IsSprinting(context.ReadValue<float>());
+        _shouldSprint = PlayerHelper.IsInputPressed(context.ReadValue<float>());
     }
 
+    private void OnReloadCanceled(InputAction.CallbackContext context)
+    {
+        Debug.Log("ReloadCanceled");
+    }
+
+    private void OnAimPerformed(InputAction.CallbackContext context)
+    {
+        _isAiming = PlayerHelper.IsInputPressed(context.ReadValue<float>());
+    }
     private void OnSingleFirePerformed(InputAction.CallbackContext context)
     {
         WeaponConfiguration activeWeaponConfig = WeaponInventory.Instance.ActiveWeaponConfig;
@@ -157,16 +178,11 @@ public class PlayerActions : Player
 
         if (activeWeaponConfig.ShootConfig.IsSingleFire)
         {
-            activeWeaponConfig.FireWeapon(activeShootSystem, context.ReadValue<float>() > 0.5f);
-            if (activeWeaponConfig.AmmoConfig.ClipAmmo > 0 && context.ReadValue<float>() > 0.5f)
+            activeWeaponConfig.FireWeapon(activeShootSystem, PlayerHelper.IsInputPressed(context.ReadValue<float>()));
+            if (activeWeaponConfig.AmmoConfig.ClipAmmo > 0 && PlayerHelper.IsInputPressed(context.ReadValue<float>()))
             {
                 OnFire?.Invoke();
             }
-        }
-
-        if (context.ReadValue<float>() > 0.5f)
-        {
-            ScoreManager.Instance.IncreaseScore(5000, ScoreText);
         }
     }
 
@@ -234,7 +250,7 @@ public class PlayerActions : Player
     private void ApplyMovement()
     {
         float currentSpeed = _shouldSprint ? _moveSpeed * _sprintMultiplier : _moveSpeed;
-        Vector3 movement = PlayerHelper.CalculateMovement(_input);
+        Vector3 movement = PlayerHelper.CalculateMovement(_moveInput);
 
         if (movement.magnitude > 0)
         {
@@ -245,50 +261,23 @@ public class PlayerActions : Player
             ApplyDrag(_drag);
         }
 
+        LookAtDirection(movement);
         UpdateAnimation(movement);
+        KeepWithinUnitCircle(_mapCenter.position, _mapRadius);
     }
 
     private void ApplyRotation()
     {
         if (Mathf.Abs(_angle) > 0)
         {
-            RotateY(Mathf.Sign(_angle) * _sensitivity);
+            RotateY(Mathf.Sign(_angle) * _sensitivity, _moveInput);
         }
     }
 
-    private bool AutoReload(WeaponConfiguration activeWeaponConfig)
-    {
-        return !_hasReloaded
-            && _shouldAutoReload
-            && activeWeaponConfig.AmmoConfig.ClipAmmo == 0
-            && activeWeaponConfig.CanReload();
-    }
+    //Separate reloading logic
 
-    private void FinishReload(WeaponConfiguration activeWeaponConfig)
-    {
-        activeWeaponConfig.Reload(WeaponInventory.Instance.ActiveWeaponShootSystem);
-        _hasReloaded = false;
-    }
+    
 
-    private void StartReload()
-    {
-        _hasReloaded = true;
-    }
-
-    private IEnumerator ReloadRoutine(WeaponConfiguration activeWeaponConfig)
-    {
-        float elapsedTime = 0f;
-        float reloadDuration = activeWeaponConfig.AmmoConfig.ReloadDuration;
-
-        while (elapsedTime < reloadDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        StartReload();
-        _reloadRoutine = null;
-    }
 
 
 }

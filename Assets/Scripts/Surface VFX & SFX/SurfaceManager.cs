@@ -15,12 +15,9 @@ public class SurfaceManager : MonoBehaviour
     private Surface _defaultSurface;
     [SerializeField] private Transform _pooledObjectsGroup;
 
-    [Header("Score Element Reference")]
-    [SerializeField] private TextMeshProUGUI _scoreText;
-
     private Dictionary<GameObject, Renderer> _rendererCache = new Dictionary<GameObject, Renderer>();
-    private Dictionary<GameObject, ObjectPool<GameObject>> objectPools = new Dictionary<GameObject, ObjectPool<GameObject>>();
-    private Dictionary<AudioSource, ObjectPool<GameObject>> audioPools = new Dictionary<AudioSource, ObjectPool<GameObject>>();
+    private Dictionary<GameObject, ObjectPool<GameObject>> _objectPools = new Dictionary<GameObject, ObjectPool<GameObject>>();
+    private Dictionary<AudioSource, ObjectPool<GameObject>> _audioPools = new Dictionary<AudioSource, ObjectPool<GameObject>>();
 
     private static SurfaceManager _instance;
     public static SurfaceManager Instance
@@ -87,7 +84,8 @@ public class SurfaceManager : MonoBehaviour
                             PlayEffects(HitPoint, HitNormal, typeEffect.SurfaceEffect, 1f);
                             if (surfaceType.Type == Type.Enemy)
                             {
-                                ScoreManager.Instance.IncreaseScore(10, _scoreText);
+                                ScoreManager.Instance.IncreaseScore(10);
+                                //Decrease health
                             }
                         }
                     }
@@ -232,10 +230,10 @@ public class SurfaceManager : MonoBehaviour
                 ObjectPool<GameObject> pool;
 
                 // Ensure pool exists for the prefab, if not, create one
-                if (!objectPools.TryGetValue(prefab, out pool))
+                if (!_objectPools.TryGetValue(prefab, out pool))
                 {
                     pool = CreateObjectPool(prefab);
-                    objectPools[prefab] = pool;  // Store the pool in the dictionary
+                    _objectPools[prefab] = pool;  // Store the pool in the dictionary
                 }
 
                 // Get object from pool
@@ -269,10 +267,10 @@ public class SurfaceManager : MonoBehaviour
 
             // Get audio source pool
             ObjectPool<GameObject> audioPool;
-            if (!audioPools.TryGetValue(playAudioEffect.AudioSourcePrefab, out audioPool))
+            if (!_audioPools.TryGetValue(playAudioEffect.AudioSourcePrefab, out audioPool))
             {
                 audioPool = CreateObjectPool(playAudioEffect.AudioSourcePrefab.gameObject);
-                audioPools[playAudioEffect.AudioSourcePrefab] = audioPool;
+                _audioPools[playAudioEffect.AudioSourcePrefab] = audioPool;
             }
 
             // Get audio instance from pool

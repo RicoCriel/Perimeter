@@ -8,6 +8,7 @@ public class Player: MonoBehaviour
 
     private Vector3 _currentVelocity = Vector3.zero;
     private float _verticalVelocity;
+    protected bool _isAiming;
     private const float _gravity = -9.81f;
 
     protected void GetComponents()
@@ -18,6 +19,11 @@ public class Player: MonoBehaviour
 
     protected void Move(Vector3 direction, float speed)
     {
+        if(_isAiming)
+        {
+            return;
+        }
+
         Vector3 horizontalMovement = direction * speed * Time.deltaTime;
 
         if (_characterController.isGrounded)
@@ -41,29 +47,32 @@ public class Player: MonoBehaviour
         _characterController.Move(_currentVelocity * Time.deltaTime);
     }
 
-    //protected void LookAtDirection(Vector3 direction)
-    //{
-    //    if (direction.sqrMagnitude > 0.01f)
-    //    {
-    //        Quaternion targetRotation = Quaternion.LookRotation(direction);
-    //        _characterController.transform.rotation = Quaternion.RotateTowards(
-    //            _characterController.transform.rotation,
-    //            targetRotation,
-    //            _rotationSpeed * Time.deltaTime
-    //        );
-    //    }
-    //}
-
-    protected void RotateY(float input)
+    protected void LookAtDirection(Vector3 direction)
     {
-        float currentAngle = _characterController.transform.rotation.eulerAngles.y;
-        float newAngle = input * _rotationSpeed * Time.deltaTime;
-        newAngle = currentAngle + newAngle;
-        float targetAngle = Mathf.Lerp(currentAngle, newAngle, _rotationSpeed * Time.deltaTime);
-        _characterController.transform.rotation = Quaternion.Euler(0,targetAngle, 0);
+        if (direction.sqrMagnitude > 0.01f && !_isAiming)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            _characterController.transform.rotation = Quaternion.RotateTowards(
+                _characterController.transform.rotation,
+                targetRotation,
+                _rotationSpeed * Time.deltaTime
+            );
+        }
     }
 
-    private void KeepWithinUnitCircle(Vector3 center, float mapRadius)
+    protected void RotateY(float input, Vector2 moveInput)
+    {
+        if(_isAiming || moveInput.magnitude <= 0)
+        {
+            float currentAngle = _characterController.transform.rotation.eulerAngles.y;
+            float newAngle = input * _rotationSpeed * Time.deltaTime;
+            newAngle = currentAngle + newAngle;
+            float targetAngle = Mathf.Lerp(currentAngle, newAngle, _rotationSpeed * Time.deltaTime);
+            _characterController.transform.rotation = Quaternion.Euler(0, targetAngle, 0);
+        }
+    }
+
+    protected void KeepWithinUnitCircle(Vector3 center, float mapRadius)
     {
         Vector3 offset = _characterController.transform.position - center;
         float distance = offset.magnitude;
@@ -78,7 +87,14 @@ public class Player: MonoBehaviour
 
     protected void UpdateAnimation(Vector3 input)
     {
-        _animator.SetFloat("Speed", input.magnitude);
+        if(_isAiming)
+        {
+            _animator.SetFloat("Speed", Mathf.Lerp(input.magnitude, 0, input.magnitude * Time.deltaTime));
+        }
+        else
+        {
+            _animator.SetFloat("Speed", input.magnitude);
+        }
     }
 
     public Vector3 Position

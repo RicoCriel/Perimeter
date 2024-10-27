@@ -6,6 +6,7 @@ public class ScoreManager : MonoBehaviour
 {
     private int _score;
     private int _zombieHitPoint = 15;
+    [SerializeField] private TextMeshProUGUI _scoreText;
     public static ScoreManager Instance { get; private set; }
 
     public int Score
@@ -29,37 +30,37 @@ public class ScoreManager : MonoBehaviour
         Instance = this;
     }
 
-    public void IncreaseScore(int amount, TextMeshProUGUI scoreText)
+    public void IncreaseScore(int amount)
     {
-        AnimateScore(Score, Score + amount, scoreText);
+        AnimateScore(Score, Score + amount);
         Score += amount; 
-        UpdateScore(Score, scoreText);
+        UpdateScore(Score);
     }
 
-    public void DecreaseScore(int amount, TextMeshProUGUI scoreText)
+    public void DecreaseScore(int amount)
     {
-        AnimateScore(Score, Mathf.Max(0, Score - amount), scoreText);
+        AnimateScore(Score, Mathf.Max(0, Score - amount));
         Score -= amount; 
-        UpdateScore(Score, scoreText);
+        UpdateScore(Score);
     }
 
-    private void AnimateScore(int fromValue, int toValue, TextMeshProUGUI scoreText)
+    private void AnimateScore(int fromValue, int toValue)
     {
         // Determine color based on whether the score is increasing or decreasing
         Color targetColor = (toValue > fromValue) ? Color.green : Color.red;
 
         // Animate the score value and scale
-        DOTween.To(() => fromValue, x => scoreText.text = x.ToString(), toValue, 1f) 
+        DOTween.To(() => fromValue, x => _scoreText.text = x.ToString(), toValue, 1f) 
             .SetEase(Ease.Linear)
             .OnComplete(() =>
             {
-                scoreText.DOColor(Color.white, 0.2f);
+                _scoreText.DOColor(Color.white, 0.2f);
             });
 
-        scoreText.DOColor(targetColor, 0.2f);
+        _scoreText.DOColor(targetColor, 0.2f);
 
         // Animate the scale of the text
-        RectTransform scoreRectTransform = scoreText.GetComponent<RectTransform>();
+        RectTransform scoreRectTransform = _scoreText.GetComponent<RectTransform>();
         scoreRectTransform.DOScale(1.2f, 0.2f).SetEase(Ease.OutQuad) 
             .OnComplete(() =>
             {
@@ -67,8 +68,8 @@ public class ScoreManager : MonoBehaviour
             });
     }
 
-    private void UpdateScore(int score, TextMeshProUGUI scoreText)
+    private void UpdateScore(int score)
     {
-        scoreText.text = Score.ToString();
+        _scoreText.text = Score.ToString();
     }
 }

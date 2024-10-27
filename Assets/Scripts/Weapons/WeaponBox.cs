@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using DG.Tweening;
 
 public class WeaponBox : MonoBehaviour
@@ -23,7 +22,7 @@ public class WeaponBox : MonoBehaviour
     public static WeaponBox Instance;
 
     private const int _weaponBoxPrice = 150;
-    public int WeaponBoxPrice { get; } = _weaponBoxPrice;
+    public int WeaponBoxPrice { get { return _weaponBoxPrice; } }
     public bool ShouldInteract;
 
     private void Awake()

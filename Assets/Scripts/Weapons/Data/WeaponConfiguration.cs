@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Pool;
 
 [CreateAssetMenu(fileName = "WeaponConfiguration", menuName = "Weapons/WeaponConfiguration", order = 0)]
@@ -14,16 +15,14 @@ public class WeaponConfiguration : ScriptableObject
     private MonoBehaviour _activeMonoBehaviour;
     private float _lastShootTime;
     private bool _isRecoiling;
+    private bool _isReloading;
+    private bool _shouldAutoReload = true;
+
     private bool _hasPlayedEmptyClip;
 
     private Vector3 _originalPosition;
     private ObjectPool<TrailRenderer> _trailPool;
     private Coroutine _recoilRoutine;
-
-    private void OnEnable()
-    {
-        _isRecoiling = false;
-    }
 
     public void ActivateBulletTrail(MonoBehaviour activeMonoBehaviour)
     {
@@ -123,21 +122,7 @@ public class WeaponConfiguration : ScriptableObject
                     ));
             }
 
-            HandleRecoil(shootSystem.transform.parent.parent);
-        }
-    }
-
-    private void StopWeaponEffects(ParticleSystem shootSystem)
-    {
-        if (shootSystem.isPlaying)
-        {
-            shootSystem.Stop();
-        }
-
-        if (_isRecoiling || _recoilRoutine != null)
-        {
-            _activeMonoBehaviour.StopCoroutine(_recoilRoutine);
-            _isRecoiling = false;
+            //HandleRecoil(shootSystem.transform.parent.parent);
         }
     }
 
@@ -203,32 +188,45 @@ public class WeaponConfiguration : ScriptableObject
 
     private void HandleRecoil(Transform weaponTransform)
     {
-        if(AmmoConfig.ClipAmmo <= 0)
+        if (AmmoConfig.ClipAmmo <= 0)
         {
             return;
         }
 
-        if (!_isRecoiling)
+        // Stop any ongoing recoil routine before starting a new one
+        if (_recoilRoutine != null)
         {
-            if (_recoilRoutine != null)
-            {
-                _activeMonoBehaviour.StopCoroutine(_recoilRoutine);
-            }
+            _activeMonoBehaviour.StopCoroutine(_recoilRoutine);
+        }
 
-            _recoilRoutine = _activeMonoBehaviour.StartCoroutine(StartRecoil(weaponTransform));
+        // Start the recoil routine
+        _recoilRoutine = _activeMonoBehaviour.StartCoroutine(StartRecoil(weaponTransform));
+    }
+
+    private void StopWeaponEffects(ParticleSystem shootSystem)
+    {
+        if (shootSystem.isPlaying)
+        {
+            shootSystem.Stop();
+        }
+
+        if (_recoilRoutine != null)
+        {
+            _activeMonoBehaviour.StopCoroutine(_recoilRoutine);
+            _recoilRoutine = null;
         }
     }
 
     private IEnumerator StartRecoil(Transform weaponTransform)
     {
-        _isRecoiling = true;
-
+        //This logic is FUCKED
         _originalPosition = weaponTransform.localPosition;
         Vector3 offset = new Vector3(ShootConfig.Recoil, 0, 0);
         Vector3 recoilPosition = _originalPosition + offset;
 
         float elapsedTime = 0;
 
+        // Move weapon to recoil position
         while (elapsedTime < ShootConfig.RecoilSpeed)
         {
             weaponTransform.localPosition = Vector3.Lerp(_originalPosition, recoilPosition, elapsedTime / ShootConfig.RecoilSpeed);
@@ -237,7 +235,9 @@ public class WeaponConfiguration : ScriptableObject
         }
 
         weaponTransform.localPosition = recoilPosition;
+        elapsedTime = 0;
 
+        // Return weapon to original position
         while (elapsedTime < ShootConfig.RecoilReturnSpeed)
         {
             weaponTransform.localPosition = Vector3.Lerp(recoilPosition, _originalPosition, elapsedTime / ShootConfig.RecoilReturnSpeed);
@@ -247,8 +247,58 @@ public class WeaponConfiguration : ScriptableObject
 
         weaponTransform.localPosition = _originalPosition;
 
-        _isRecoiling = false;
+        // Clear the coroutine reference once recoil completes
         _recoilRoutine = null;
     }
+
+    public void ReloadWeapon(WeaponConfiguration activeWeaponConfig, InputAction.CallbackContext context)
+    {
+        if(AutoReload(activeWeaponConfig) || ManualReload(activeWeaponConfig, context))
+        { 
+            Reload(activeWeaponConfig);
+        }
+    }
+
+    private bool AutoReload(WeaponConfiguration activeWeaponConfig)
+    {
+        return !_isReloading
+            && _shouldAutoReload
+            && activeWeaponConfig.AmmoConfig.ClipAmmo == 0
+            && activeWeaponConfig.CanReload();
+    }
+
+    private bool ManualReload(WeaponConfiguration activeWeaponConfig, InputAction.CallbackContext context)
+    {
+        return !_isReloading
+            && PlayerHelper.IsInputPressed(context.ReadValue<float>())
+            && activeWeaponConfig.CanReload();
+    }
+
+    private void Reload(WeaponConfiguration activeWeaponConfig)
+    {
+        activeWeaponConfig.Reload(WeaponInventory.Instance.ActiveWeaponShootSystem);
+        _isReloading = false;
+    }
+
+    private void StartReload()
+    {
+        _isReloading = true;
+    }
+
+    private IEnumerator ReloadRoutine(WeaponConfiguration activeWeaponConfig)
+    {
+        float elapsedTime = 0f;
+        float reloadDuration = activeWeaponConfig.AmmoConfig.ReloadDuration;
+
+        while (elapsedTime < reloadDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        StartReload();
+        //_reloadRoutine = null;
+    }
+
 
 }
