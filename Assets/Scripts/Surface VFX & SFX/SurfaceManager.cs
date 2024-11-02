@@ -74,6 +74,7 @@ public class SurfaceManager : MonoBehaviour
             {
                 Texture activeTexture = GetActiveTextureFromRenderer(renderer, TriangleIndex);
                 SurfaceType surfaceType = Surfaces.Find(surface => surface.AlbedoTexture == activeTexture);
+                HitObject.TryGetComponent<Health>(out  Health health);
 
                 if (surfaceType != null)
                 {
@@ -84,8 +85,9 @@ public class SurfaceManager : MonoBehaviour
                             PlayEffects(HitPoint, HitNormal, typeEffect.SurfaceEffect, 1f);
                             if (surfaceType.Type == Type.Enemy)
                             {
+                                //avoid magic numbers
                                 ScoreManager.Instance.IncreaseScore(10);
-                                //Decrease health
+                                health.DecreaseHealth();
                             }
                         }
                     }

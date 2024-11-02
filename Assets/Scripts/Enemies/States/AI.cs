@@ -9,13 +9,15 @@ public class AI : MonoBehaviour
     private Animator _animator;
     private Transform _player;
     private EnemyState _currentState;
+    private Health _health;
 
     private void Start()
     {
         _agent = this.GetComponent<NavMeshAgent>();
         _animator = this.GetComponent<Animator>();
+        _health = this.GetComponent<Health>();
         _player = GameEnvironment.Instance.Player.transform;
-        _currentState = new Idle(this.gameObject, _agent, _animator, _player);
+        _currentState = new Idle(this.gameObject, _health, _agent, _animator, _player);
     }
 
     private void Update()

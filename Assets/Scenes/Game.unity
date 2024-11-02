@@ -862,7 +862,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.7813381, g: 0.9198113, b: 0.7592782, a: 1}
+      maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -5922,7 +5922,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyPrefab: {fileID: 148015016470093562, guid: 41add66b59169f447b6c81a58e2aef5c, type: 3}
-  _foxPrefab: {fileID: 2758868919794136960, guid: 94430ddd5930135439b077fe2f851f89, type: 3}
+  _foxPrefab: {fileID: 148015016470093562, guid: 41add66b59169f447b6c81a58e2aef5c, type: 3}
   _enemyCount: 0
   _waveNumber: 1
   _zombieSpawnPoints:

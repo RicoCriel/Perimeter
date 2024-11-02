@@ -7,7 +7,7 @@ public class EnemyState
 {
     public enum STATE
     {
-        IDLE, ROAM, PURSUE, ATTACK
+        IDLE, ROAM, PURSUE, ATTACK, DEAD
     }
 
     public enum EVENT
@@ -18,6 +18,7 @@ public class EnemyState
     public STATE Name;
     protected EVENT _stage;
     protected GameObject _npc;
+    protected Health _health;
     protected Animator _anim;
     protected Transform _player;
     protected EnemyState _nextState;
@@ -27,9 +28,10 @@ public class EnemyState
     private float _visionAngle = 60.0f;
     private float _attackDistance = 3f;
 
-    public EnemyState(GameObject npc, NavMeshAgent agent, Animator anim, Transform player)
+    public EnemyState(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player)
     {
         _npc = npc;
+        _health = health;
         _agent = agent;
         _anim = anim;
         _stage = EVENT.ENTER;
@@ -52,7 +54,7 @@ public class EnemyState
         return this;
     }
 
-    public bool CanSeePlayer()
+    protected bool CanSeePlayer()
     {
         Vector3 direction = _player.position - _npc.transform.position;
         float angle = Vector3.Angle(direction, _npc.transform.forward);
@@ -64,7 +66,7 @@ public class EnemyState
         return false;
     }
 
-    public bool CanAttackPlayer()
+    protected bool CanAttackPlayer()
     {
         Vector3 direction = _player.position - _npc.transform.position;
         if (direction.magnitude < _attackDistance)
@@ -72,5 +74,10 @@ public class EnemyState
             return true;
         }
         return false;
+    }
+
+    protected bool IsAlive()
+    {
+        return _health.CurrentHealth > 0;
     }
 }

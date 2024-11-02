@@ -87,9 +87,10 @@ public class Player: MonoBehaviour
 
     protected void UpdateAnimation(Vector3 input)
     {
+        //refactor
         if(_isAiming)
         {
-            _animator.SetFloat("Speed", Mathf.Lerp(input.magnitude, 0, input.magnitude * Time.deltaTime));
+            _animator.SetFloat("Speed", 0);
         }
         else
         {

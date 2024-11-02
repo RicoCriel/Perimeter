@@ -26,6 +26,7 @@ public sealed class GameEnvironment
 
     public Vector3 GetRandomWanderPoint(float radius)
     {
+        //make radius dynamic so it is reusable for many different maps
         Vector2 randomPoint = Random.insideUnitCircle * radius;
         Vector3 wanderPoint = new Vector3(randomPoint.x, 0f, randomPoint.y) + _mapCenter.transform.position;
 
