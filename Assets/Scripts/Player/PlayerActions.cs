@@ -3,24 +3,28 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class PlayerActions : Player
 {
-    [Header("Player Settings")]
+    [Header("Player Movement Settings")]
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _sprintMultiplier;
     [SerializeField] private float _drag;
+    [SerializeField] private float _acceleration;
+    [SerializeField] private float _deceleration;
 
-    [Header("Input Settings")]
-    [Range(0.01f, 1f)]
-    [SerializeField] private float _sensitivity;
-    [SerializeField] private bool _shouldInvertX;
+    [Header("Player Aiming Settings")]
+    [SerializeField] private Transform _aimTarget;
+    [SerializeField] private Image _aimCrosshair;
+    [SerializeField] private float _visionAngle;
+    [SerializeField] private float _visionRange;
+    [SerializeField] private float _aimHeight;
+    [Range(1f, 20f)]
+    [SerializeField] private float _aimSensitivity;
 
     [Header("Reload Settings")]
     [SerializeField] private bool _shouldAutoReload;
-
-    [Header("Aiming Settings")]
-    [SerializeField] private GameObject _aimingReticle;
 
     [Header("Map Settings")]
     [SerializeField] private Transform _mapCenter;
@@ -29,7 +33,7 @@ public class PlayerActions : Player
     public InputActionAsset PrimaryActions;
     private InputActionMap _gameplayActionMap;
     private InputAction _moveInputAction;
-    private InputAction _rotateInputAction;
+    private InputAction _lookInputAction;
     private InputAction _sprintInputAction;
     private InputAction _singleFireInputAction;
     private InputAction _automaticFireInputAction;
@@ -38,11 +42,20 @@ public class PlayerActions : Player
     private InputAction _reloadInputAction;
 
     private Vector2 _moveInput;
+    private Vector2 _aimInput;
+
+    private float _currentSpeed = 0f;
     private float _angle;
     private bool _shouldSprint;
 
     private Coroutine _autoFireCoroutine; 
     public UnityEvent OnFire;
+
+    public override float VisionAngle => _visionAngle;
+    public override float VisionRange => _visionRange;
+    public override float AimHeight => _aimHeight;
+    public override Image AimCrossHair => _aimCrosshair;
+    public override Transform AimTarget => _aimTarget;
 
     private void Awake()
     {
@@ -66,17 +79,19 @@ public class PlayerActions : Player
     private void Update()
     {
         ApplyMovement();
-        ApplyRotation();
+        ControlAimingTarget(_aimInput, _aimTarget, _aimSensitivity);
+        AimAssist(_aimTarget, _aimInput, _aimSensitivity);
+        UpdateCrossHairPos();
     }
 
     private void FindInputActions()
     {
         _moveInputAction = _gameplayActionMap.FindAction("Move");
+        _lookInputAction = _gameplayActionMap.FindAction("Look");
         _sprintInputAction = _gameplayActionMap.FindAction("Sprint");
         _singleFireInputAction = _gameplayActionMap.FindAction("Single Fire");
         _automaticFireInputAction = _gameplayActionMap.FindAction("Auto Fire");
         _interactInputAction = _gameplayActionMap.FindAction("Interact");
-        _rotateInputAction = _gameplayActionMap.FindAction("Rotate");
         _reloadInputAction = _gameplayActionMap.FindAction("Reload");
         _aimInputAction = _gameplayActionMap.FindAction("Aim");
     }
@@ -86,6 +101,7 @@ public class PlayerActions : Player
         if (isEnabled)
         {
             _moveInputAction.Enable();
+            _lookInputAction.Enable();
             _sprintInputAction.Enable();
             _singleFireInputAction.Enable();
             _automaticFireInputAction.Enable();
@@ -96,6 +112,7 @@ public class PlayerActions : Player
         else
         {
             _moveInputAction.Disable();
+            _lookInputAction.Disable();
             _sprintInputAction.Disable();
             _singleFireInputAction.Disable();
             _automaticFireInputAction.Disable();
@@ -109,7 +126,7 @@ public class PlayerActions : Player
     {
         _sprintInputAction.performed += OnSprintPerformed;
         _moveInputAction.performed += OnMovePerformed;
-        _rotateInputAction.performed += OnRotatePerformed;
+        _lookInputAction.performed += OnLookPerformed; 
         _singleFireInputAction.performed += OnSingleFirePerformed;
         _automaticFireInputAction.started += OnAutoFirePerformed;
         _interactInputAction.performed += OnInteractPerformed;
@@ -118,7 +135,7 @@ public class PlayerActions : Player
 
         _sprintInputAction.canceled += OnSprintPerformed;
         _moveInputAction.canceled += OnMoveCanceled;
-        _rotateInputAction.canceled += OnRotateCanceled;
+        _lookInputAction.canceled += OnLookCanceled;
         _singleFireInputAction.canceled += OnSingleFirePerformed;
         _automaticFireInputAction.canceled += OnAutoFireCanceled;
         _interactInputAction.canceled += OnInteractCanceled;
@@ -126,11 +143,21 @@ public class PlayerActions : Player
         _aimInputAction.canceled += OnAimPerformed;
     }
 
+    private void OnLookCanceled(InputAction.CallbackContext context)
+    {
+        _aimInput = Vector2.zero;
+    }
+
+    private void OnLookPerformed(InputAction.CallbackContext context)
+    {
+        _aimInput = context.ReadValue<Vector2>().normalized;
+    }
+
     private void UnsubscribeInputActionEvents()
     {
         _sprintInputAction.performed -= OnSprintPerformed;
         _moveInputAction.performed -= OnMovePerformed;
-        _rotateInputAction.performed -= OnRotatePerformed;
+        _lookInputAction.performed -= OnLookPerformed;
         _singleFireInputAction.performed -= OnSingleFirePerformed;
         _automaticFireInputAction.started -= OnAutoFirePerformed;
         _interactInputAction.performed -= OnInteractPerformed;
@@ -147,16 +174,6 @@ public class PlayerActions : Player
         _moveInput = Vector2.zero;
     }
 
-    private void OnRotatePerformed(InputAction.CallbackContext context)
-    { 
-        _angle = context.ReadValue<float>();
-    }
-
-    private void OnRotateCanceled(InputAction.CallbackContext context)
-    {
-        _angle = 0f;
-    }
-
     private void OnSprintPerformed(InputAction.CallbackContext context)
     {
         _shouldSprint = PlayerHelper.IsInputPressed(context.ReadValue<float>());
@@ -164,13 +181,14 @@ public class PlayerActions : Player
 
     private void OnReloadCanceled(InputAction.CallbackContext context)
     {
-        Debug.Log("ReloadCanceled");
+        //Debug.Log("ReloadCanceled");
     }
 
     private void OnAimPerformed(InputAction.CallbackContext context)
     {
         _isAiming = PlayerHelper.IsInputPressed(context.ReadValue<float>());
     }
+
     private void OnSingleFirePerformed(InputAction.CallbackContext context)
     {
         WeaponConfiguration activeWeaponConfig = WeaponInventory.Instance.ActiveWeaponConfig;
@@ -249,17 +267,20 @@ public class PlayerActions : Player
 
     private void ApplyMovement()
     {
-        float currentSpeed = _shouldSprint ? _moveSpeed * _sprintMultiplier : _moveSpeed;
+        float targetSpeed = _shouldSprint ? _moveSpeed * _sprintMultiplier : _moveSpeed;
         Vector3 movement = PlayerHelper.CalculateMovement(_moveInput);
 
         if (movement.magnitude > 0)
         {
-            Move(movement, currentSpeed);
+            _currentSpeed = Mathf.Lerp(_currentSpeed, targetSpeed, _acceleration * Time.deltaTime);
         }
         else
         {
-            ApplyDrag(_drag);
+            _currentSpeed = Mathf.Lerp(_currentSpeed, 0, _deceleration * Time.deltaTime);
+            _currentSpeed = Mathf.Clamp01(0);
         }
+
+        Move(movement, _currentSpeed);
 
         LookAtDirection(movement);
         UpdateAnimation(movement);
@@ -270,14 +291,8 @@ public class PlayerActions : Player
     {
         if (Mathf.Abs(_angle) > 0)
         {
-            RotateY(Mathf.Sign(_angle) * _sensitivity, _moveInput);
+            //RotateY(Mathf.Sign(_angle) * _sensitivity, _moveInput);
         }
     }
-
-    //Separate reloading logic
-
-    
-
-
 
 }

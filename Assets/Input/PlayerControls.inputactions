@@ -15,10 +15,10 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Rotate",
+                    "name": "Look",
                     "type": "Value",
-                    "id": "e3f2c13f-22ee-4dc3-a7ce-f94846946e6f",
-                    "expectedControlType": "Axis",
+                    "id": "c68613db-42bd-434c-91c5-402a59783719",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -73,15 +73,6 @@
                     "type": "Button",
                     "id": "13b270af-0bfa-4957-a9f0-565fa80ccccb",
                     "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Adjust Weapon",
-                    "type": "Value",
-                    "id": "75090c08-6c7e-4640-83f5-f6f15dc58634",
-                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -200,28 +191,6 @@
                 },
                 {
                     "name": "",
-                    "id": "d6740671-d332-4498-95e9-024053269f03",
-                    "path": "<Gamepad>/rightStick/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "eb38ffa4-6ebf-46ac-95c9-c008356664c5",
-                    "path": "<Mouse>/delta/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5b80ac9a-58b9-4a94-911f-da21f12c797b",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
@@ -332,28 +301,6 @@
                 },
                 {
                     "name": "",
-                    "id": "ede92284-ade0-4a75-9baa-100be575d4e0",
-                    "path": "<Gamepad>/rightStick/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Adjust Weapon",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1af73677-c758-4fd5-9aef-8cd762cb432e",
-                    "path": "<Mouse>/delta/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Adjust Weapon",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "9621030f-b932-40a0-82a0-357bd4baf65e",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
@@ -371,6 +318,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e9465aff-3362-458a-8402-bf8d66ffe71f",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "84c1dfc1-6ad6-4262-a2d3-3500048a6df5",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

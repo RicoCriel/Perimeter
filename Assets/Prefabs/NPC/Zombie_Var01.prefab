@@ -42,13 +42,13 @@ GameObject:
   m_Component:
   - component: {fileID: 919311934650735325}
   - component: {fileID: 1879599684734879746}
-  - component: {fileID: 8375297703347470347}
   - component: {fileID: 2477070399161289000}
   - component: {fileID: 3717120262471996628}
   - component: {fileID: 5626884950802302363}
   - component: {fileID: 7210517424389825502}
   - component: {fileID: 4919546455640043018}
   - component: {fileID: -597977265177855946}
+  - component: {fileID: 5303669025666713138}
   m_Layer: 0
   m_Name: Zombie_Var01
   m_TagString: Untagged
@@ -94,29 +94,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!136 &8375297703347470347
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 148015016470093562}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.15
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.53, z: 0}
 --- !u!114 &2477070399161289000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,7 +276,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentHealth: 0
-  _maxHealth: 100
+  _maxHealth: 300
+--- !u!65 &5303669025666713138
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148015016470093562}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3, y: 1, z: 0.3}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &231564634962702091
 GameObject:
   m_ObjectHideFlags: 0
@@ -1221,7 +1219,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2815086471560118808}
-  - component: {fileID: 6975374062114605279}
   m_Layer: 0
   m_Name: HandSocket
   m_TagString: Untagged
@@ -1244,27 +1241,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3832346135547656651}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &6975374062114605279
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8086657749118172212}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.125, y: 0.125, z: 0.125}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8369669806507113482
 GameObject:
   m_ObjectHideFlags: 0
