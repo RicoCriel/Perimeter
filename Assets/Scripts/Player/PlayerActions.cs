@@ -22,6 +22,10 @@ public class PlayerActions : Player
     [SerializeField] private float _aimHeight;
     [Range(1f, 20f)]
     [SerializeField] private float _aimSensitivity;
+    [Range(0,60f)]
+    [SerializeField] private float _crossHairSpeed;
+    [Range(0,10f)]
+    [SerializeField] private float _aimTargetSpeed;
 
     [Header("Reload Settings")]
     [SerializeField] private bool _shouldAutoReload;
@@ -45,7 +49,6 @@ public class PlayerActions : Player
     private Vector2 _aimInput;
 
     private float _currentSpeed = 0f;
-    private float _angle;
     private bool _shouldSprint;
 
     private Coroutine _autoFireCoroutine; 
@@ -56,6 +59,8 @@ public class PlayerActions : Player
     public override float AimHeight => _aimHeight;
     public override Image AimCrossHair => _aimCrosshair;
     public override Transform AimTarget => _aimTarget;
+    public override float CrosshairSpeed => _crossHairSpeed;
+    public override float AimTargetSpeed => _aimTargetSpeed;
 
     private void Awake()
     {
@@ -80,8 +85,9 @@ public class PlayerActions : Player
     {
         ApplyMovement();
         ControlAimingTarget(_aimInput, _aimTarget, _aimSensitivity);
+        HandleAimTargetReset();
         AimAssist(_aimTarget, _aimInput, _aimSensitivity);
-        UpdateCrossHairPos();
+        UpdateCrosshairPosition();
     }
 
     private void FindInputActions()
@@ -196,7 +202,10 @@ public class PlayerActions : Player
 
         if (activeWeaponConfig.ShootConfig.IsSingleFire)
         {
-            activeWeaponConfig.FireWeapon(activeShootSystem, PlayerHelper.IsInputPressed(context.ReadValue<float>()));
+            activeWeaponConfig.FireWeapon(activeShootSystem, 
+                PlayerHelper.IsInputPressed(context.ReadValue<float>()),
+                _aimCrosshair , _aimTarget);
+
             if (activeWeaponConfig.AmmoConfig.ClipAmmo > 0 && PlayerHelper.IsInputPressed(context.ReadValue<float>()))
             {
                 OnFire?.Invoke();
@@ -232,7 +241,7 @@ public class PlayerActions : Player
             {
                 OnFire?.Invoke();
             }
-            activeWeaponConfig.FireWeapon(shootSystem, true);
+            activeWeaponConfig.FireWeapon(shootSystem, true, _aimCrosshair, _aimTarget);
             yield return null;
             yield return new WaitForSeconds(activeWeaponConfig.ShootConfig.FireRate);
         }
@@ -251,7 +260,7 @@ public class PlayerActions : Player
                 _autoFireCoroutine = null;
             }
 
-            activeWeaponConfig.FireWeapon(activeShootSystem, false);
+            activeWeaponConfig.FireWeapon(activeShootSystem, false, _aimCrosshair, _aimTarget);
         }
     }
 
@@ -285,14 +294,6 @@ public class PlayerActions : Player
         LookAtDirection(movement);
         UpdateAnimation(movement);
         KeepWithinUnitCircle(_mapCenter.position, _mapRadius);
-    }
-
-    private void ApplyRotation()
-    {
-        if (Mathf.Abs(_angle) > 0)
-        {
-            //RotateY(Mathf.Sign(_angle) * _sensitivity, _moveInput);
-        }
     }
 
 }

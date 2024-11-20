@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,9 +20,22 @@ public class Player: MonoBehaviour
     public virtual float VisionAngle { get; set; }
     public virtual float VisionRange { get; set; }
     public virtual float AimHeight { get; set; }
-
     public virtual Image AimCrossHair { get; set; }
     public virtual Transform AimTarget { get; set; }
+    public virtual float AimTargetSpeed { get; set; }
+    public virtual float CrosshairSpeed { get; set; }
+
+    private Vector3 _originalAimTargetPosition;
+    private float _aimInputTimer = 0f;
+    private const float _aimResetDelay = 1f;
+
+    protected void Start()
+    {
+        if (AimTarget != null)
+        {
+            _originalAimTargetPosition = AimTarget.localPosition;
+        }
+    }
 
     protected void GetComponents()
     {
@@ -123,43 +137,72 @@ public class Player: MonoBehaviour
                 Vector3 targetPos = new Vector3(torsoPosition.x, _characterController.transform.position.y, torsoPosition.z);
                 _characterController.transform.LookAt(targetPos);
 
-                ControlAimingTargetWhileLockedOn(aimInput, aimTarget, aimSensitivity, enemyCollider);
+                EnemyTargetLockOn(aimInput, aimTarget, aimSensitivity, enemyCollider);
             }
         }
     }
 
-
     protected void ControlAimingTarget(Vector2 aimInput, Transform target, float aimSensitivity)
     {
-        if(_isAiming)
+        if (_isAiming) return;
+
+        if (aimInput.sqrMagnitude > 0.01f)
         {
-            return;
+            _aimInputTimer = 0f; 
         }
 
-        Vector3 newTargetPosition =  target.localPosition + new Vector3(aimInput.x, aimInput.y, 0) * aimSensitivity * Time.deltaTime;
+        Vector3 newTargetPosition = target.localPosition + new Vector3(aimInput.x, aimInput.y, 0) * aimSensitivity * Time.deltaTime;
         target.localPosition = newTargetPosition;
     }
 
-    private void ControlAimingTargetWhileLockedOn(Vector2 aimInput, Transform aimTarget, float aimSensitivity, Collider enemyCollider)
+    protected void HandleAimTargetReset()
     {
-        // Check if the locked-on target has changed
+        if (!_isAiming)
+        {
+            _aimInputTimer += Time.deltaTime;
+
+            if (_aimInputTimer >= _aimResetDelay)
+            {
+                AimTarget.localPosition = Vector3.Lerp(
+                    AimTarget.localPosition,
+                    _originalAimTargetPosition,
+                    Time.deltaTime * CrosshairSpeed
+                );
+
+                // If the target is close enough to the original position, snap it
+                if (Vector3.Distance(AimTarget.localPosition, _originalAimTargetPosition) < 0.01f)
+                {
+                    AimTarget.localPosition = _originalAimTargetPosition;
+                    _aimInputTimer = 0f; // Reset the timer after snapping
+                }
+            }
+        }
+        else
+        {
+            _aimInputTimer = 0f; // Reset the timer if aiming
+        }
+    }
+
+    private void EnemyTargetLockOn(Vector2 aimInput, Transform aimTarget, float aimSensitivity, Collider enemyCollider)
+    {
         if (_currentLockedEnemyCollider != enemyCollider)
         {
             _currentLockedEnemyCollider = enemyCollider;
-            _isAimTargetInitialized = false; 
+            _isAimTargetInitialized = false;
         }
 
-        // Get the enemy's collider bounds in world space
         Bounds enemyBounds = enemyCollider.bounds;
+        Vector3 targetPosition = enemyBounds.center;
 
-        // Initialize aim target position to the enemy's center only if not yet initialized
-        if (!_isAimTargetInitialized)
+        Rigidbody enemyRigidbody = enemyCollider.GetComponent<Rigidbody>();
+        if (enemyRigidbody != null)
         {
-            aimTarget.position = enemyBounds.center;
-            _isAimTargetInitialized = true; 
+            targetPosition += enemyRigidbody.velocity * Time.deltaTime;
         }
 
-        Vector3 aimingMovement = new Vector3(aimInput.x, aimInput.y, 0) * aimSensitivity * Time.deltaTime;
+        aimTarget.position = Vector3.Lerp(aimTarget.position, targetPosition, Time.deltaTime * CrosshairSpeed);
+
+        Vector3 aimingMovement = new Vector3(0, aimInput.y, aimInput.x) * aimSensitivity * Time.deltaTime;
         Vector3 newTargetPosition = aimTarget.position + aimingMovement;
 
         newTargetPosition.x = Mathf.Clamp(newTargetPosition.x, enemyBounds.min.x, enemyBounds.max.x);
@@ -169,9 +212,14 @@ public class Player: MonoBehaviour
         aimTarget.position = newTargetPosition;
     }
 
-    protected void UpdateCrossHairPos()
+    protected void UpdateCrosshairPosition()
     {
-        AimCrossHair.rectTransform.position = Camera.main.WorldToScreenPoint(AimTarget.transform.position);
+        Vector3 targetScreenPosition = Camera.main.WorldToScreenPoint(AimTarget.position);
+        AimCrossHair.rectTransform.position = Vector3.Lerp(
+            AimCrossHair.rectTransform.position,
+            targetScreenPosition,
+            Time.deltaTime * CrosshairSpeed
+        );
     }
 
     protected void KeepWithinUnitCircle(Vector3 center, float mapRadius)

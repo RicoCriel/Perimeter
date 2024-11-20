@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Pool;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "WeaponConfiguration", menuName = "Weapons/WeaponConfiguration", order = 0)]
 public class WeaponConfiguration : ScriptableObject
@@ -45,21 +46,21 @@ public class WeaponConfiguration : ScriptableObject
         _hasPlayedEmptyClip = false;
     }
 
-    public void FireWeapon(ParticleSystem shootSystem, bool wantsToShoot)
+    public void FireWeapon(ParticleSystem shootSystem, bool wantsToShoot, Image aimCrosshair, Transform rigAimingTarget)
     {
         AudioSource audioSource = shootSystem.GetComponent<AudioSource>();
 
-        if(!wantsToShoot)
+        if (!wantsToShoot)
         {
             HandleInactiveWeapon(shootSystem, audioSource);
             return;
         }
 
-        if (AmmoConfig.ClipAmmo > 0 && wantsToShoot)
+        if (AmmoConfig.ClipAmmo > 0)
         {
-            Shoot(shootSystem);
+            Shoot(shootSystem, aimCrosshair, rigAimingTarget);
         }
-        else if(AmmoConfig.ClipAmmo == 0 && wantsToShoot)
+        else if (AmmoConfig.ClipAmmo == 0)
         {
             HandleEmptyWeapon(shootSystem, audioSource);
         }
@@ -87,7 +88,7 @@ public class WeaponConfiguration : ScriptableObject
         }
     }
 
-    private void Shoot(ParticleSystem shootSystem)
+    private void Shoot(ParticleSystem shootSystem, Image aimCrosshair, Transform rigAimingTarget)
     {
         if (Time.time > ShootConfig.FireRate + _lastShootTime)
         {
@@ -103,26 +104,41 @@ public class WeaponConfiguration : ScriptableObject
                 Random.Range(-ShootConfig.Spread.z, ShootConfig.Spread.z)
             );
 
-            Vector3 shootDirection = shootSystem.transform.parent.forward + spreadDirection;
-            shootDirection.Normalize();
-
             Vector3 startPosition = shootSystem.transform.position;
-            AmmoConfig.ClipAmmo --;
 
-            if (Physics.Raycast(startPosition, shootDirection, out RaycastHit hit, float.MaxValue, ShootConfig.HitMask))
+            // Calculate direction towards the crosshair
+            Vector3 aimWorldPosition = Vector3.zero;
+            if (aimCrosshair != null)
             {
-                _activeMonoBehaviour.StartCoroutine(PlayBulletTrail(startPosition, hit.point, hit));
+                Ray ray = Camera.main.ScreenPointToRay(aimCrosshair.rectTransform.position);
+                if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, ShootConfig.HitMask))
+                {
+                    aimWorldPosition = hit.point;
+                }
+                else
+                {
+                    aimWorldPosition = ray.GetPoint(TrailConfig.MissDistance); // A fallback if no hit
+                }
+            }
+
+            Vector3 shootDirection = (aimWorldPosition - startPosition).normalized + spreadDirection;
+
+            AmmoConfig.ClipAmmo--;
+
+            if (Physics.Raycast(startPosition, shootDirection, out RaycastHit rayHit, float.MaxValue, ShootConfig.HitMask))
+            {
+                _activeMonoBehaviour.StartCoroutine(PlayBulletTrail(startPosition, rayHit.point, rayHit));
             }
             else
             {
                 _activeMonoBehaviour.StartCoroutine(PlayBulletTrail(
                     startPosition,
                     startPosition + (shootDirection * TrailConfig.MissDistance),
-                    new RaycastHit() 
-                    ));
+                    new RaycastHit()
+                ));
             }
 
-            //HandleRecoil(shootSystem.transform.parent.parent);
+            // HandleRecoil(rigAimingTransform);
         }
     }
 
@@ -299,6 +315,5 @@ public class WeaponConfiguration : ScriptableObject
         StartReload();
         //_reloadRoutine = null;
     }
-
 
 }
