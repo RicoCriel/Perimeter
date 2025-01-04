@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 public class Roam : EnemyState
 {
-    public Roam(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player) : base(npc, health, agent, anim, player)
+    public Roam(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money)
+        : base(npc, health, agent, anim, player, money)
     {
         Name = STATE.ROAM;
         _agent.speed = 2f;
@@ -29,13 +30,13 @@ public class Roam : EnemyState
 
         if(CanSeePlayer())
         { 
-            _nextState = new Pursue(_npc, _health, _agent, _anim, _player);
+            _nextState = new Pursue(_npc, _health, _agent, _anim, _player, _money);
             _stage = EVENT.EXIT;
         }
 
         if (!IsAlive())
         {
-            _nextState = new Dead(_npc, _health, _agent, _anim, _player);
+            _nextState = new Dead(_npc, _health, _agent, _anim, _player, _money);
             _stage = EVENT.EXIT;
         }
     }

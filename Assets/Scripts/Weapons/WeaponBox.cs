@@ -154,7 +154,6 @@ public class WeaponBox : MonoBehaviour
     {
         _boxCanvas.transform.localScale = Vector3.zero;
         _boxCanvas.gameObject.SetActive(true);
-
         _boxCanvas.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
 
         CanvasGroup canvasGroup = _boxCanvas.GetComponent<CanvasGroup>();

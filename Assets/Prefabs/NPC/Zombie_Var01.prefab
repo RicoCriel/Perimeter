@@ -236,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8cf5f37601e0fc42a814fa493f1c7c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _moneyPrefab: {fileID: 7447338354895891238, guid: 39a8d6ba83cb1a74fbe6016240fea93a, type: 3}
 --- !u!54 &4919546455640043018
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -276,7 +277,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentHealth: 0
-  _maxHealth: 300
+  _maxHealth: 60
+  IsPlayer: 0
 --- !u!65 &5303669025666713138
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1219,6 +1221,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2815086471560118808}
+  - component: {fileID: 1871078676471754701}
+  - component: {fileID: 3882691746224313037}
   m_Layer: 0
   m_Name: HandSocket
   m_TagString: Untagged
@@ -1235,12 +1239,46 @@ Transform:
   m_GameObject: {fileID: 8086657749118172212}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.056, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.056, y: 0.000000053167, z: -0.0000000082681}
+  m_LocalScale: {x: 0.1321025, y: 0.1321025, z: 0.1321025}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3832346135547656651}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1871078676471754701
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8086657749118172212}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3882691746224313037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8086657749118172212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8fe87d339dface42a2e213754b94f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _health: {fileID: -597977265177855946}
 --- !u!1 &8369669806507113482
 GameObject:
   m_ObjectHideFlags: 0

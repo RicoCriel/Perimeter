@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 public class Pursue : EnemyState
 {
-    public Pursue(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player) : base(npc, health, agent, anim, player)
+    public Pursue(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money)
+        : base(npc, health, agent, anim, player, money)
     {
         Name = STATE.PURSUE;
         _agent.speed = 3f;
@@ -27,18 +28,18 @@ public class Pursue : EnemyState
         { 
             if(CanAttackPlayer())
             {
-                _nextState = new Attack(_npc, _health, _agent, _anim, _player);
+                _nextState = new Attack(_npc, _health, _agent, _anim, _player, _money);
                 _stage = EVENT.EXIT;
             }
             else if(!CanSeePlayer())
             { 
-                _nextState = new Roam(_npc, _health, _agent, _anim, _player);
+                _nextState = new Roam(_npc, _health, _agent, _anim, _player, _money);
                 _stage = EVENT.EXIT;
             }
 
             if (!IsAlive())
             {
-                _nextState = new Dead(_npc, _health, _agent, _anim, _player);
+                _nextState = new Dead(_npc, _health, _agent, _anim, _player, _money);
                 _stage = EVENT.EXIT;
             }
         }

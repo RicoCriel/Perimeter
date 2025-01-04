@@ -85,8 +85,6 @@ public class SurfaceManager : MonoBehaviour
                             PlayEffects(HitPoint, HitNormal, typeEffect.SurfaceEffect, 1f);
                             if (surfaceType.Type == Type.Enemy)
                             {
-                                //avoid magic numbers
-                                ScoreManager.Instance.IncreaseScore(10);
                                 health.DecreaseHealth();
                             }
                         }

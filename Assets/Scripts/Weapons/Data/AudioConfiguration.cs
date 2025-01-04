@@ -11,7 +11,7 @@ public class AudioConfiguration : ScriptableObject
     
     public void PlayShootingClip(AudioSource audioSource, bool isLastBullet, bool isAutomaticFire)
     {
-        if (isAutomaticFire)
+        if (isAutomaticFire && audioSource != null)
         {
             if (!audioSource.isPlaying)
             {

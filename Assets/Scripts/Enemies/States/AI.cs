@@ -10,6 +10,7 @@ public class AI : MonoBehaviour
     private Transform _player;
     private EnemyState _currentState;
     private Health _health;
+    [SerializeField] private GameObject _moneyPrefab;
 
     private void Start()
     {
@@ -17,7 +18,7 @@ public class AI : MonoBehaviour
         _animator = this.GetComponent<Animator>();
         _health = this.GetComponent<Health>();
         _player = GameEnvironment.Instance.Player.transform;
-        _currentState = new Idle(this.gameObject, _health, _agent, _animator, _player);
+        _currentState = new Idle(this.gameObject, _health, _agent, _animator, _player , _moneyPrefab);
     }
 
     private void Update()

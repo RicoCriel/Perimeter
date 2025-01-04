@@ -15,15 +15,12 @@ public class WeaponConfiguration : ScriptableObject
 
     private MonoBehaviour _activeMonoBehaviour;
     private float _lastShootTime;
-    private bool _isRecoiling;
     private bool _isReloading;
     private bool _shouldAutoReload = true;
 
     private bool _hasPlayedEmptyClip;
-
-    private Vector3 _originalPosition;
     private ObjectPool<TrailRenderer> _trailPool;
-    private Coroutine _recoilRoutine;
+    
 
     public void ActivateBulletTrail(MonoBehaviour activeMonoBehaviour)
     {
@@ -32,21 +29,7 @@ public class WeaponConfiguration : ScriptableObject
         _trailPool = new ObjectPool<TrailRenderer>(CreateBulletTrail, maxSize: TrailConfig.MaxAmount);
     }
 
-    public bool CanReload()
-    {
-        return AmmoConfig.CanReload();
-    }
-
-    public void Reload(ParticleSystem shootSystem)
-    {
-        AudioSource audioSource = shootSystem.GetComponent<AudioSource>();
-        StopWeaponEffects(shootSystem);
-        AmmoConfig.Reload();
-        AudioConfig.PlayReloadingClip(audioSource);
-        _hasPlayedEmptyClip = false;
-    }
-
-    public void FireWeapon(ParticleSystem shootSystem, bool wantsToShoot, Image aimCrosshair, Transform rigAimingTarget)
+    public void FireWeapon(ParticleSystem shootSystem, bool wantsToShoot, Image aimCrosshair, bool isAiming)
     {
         AudioSource audioSource = shootSystem.GetComponent<AudioSource>();
 
@@ -58,7 +41,7 @@ public class WeaponConfiguration : ScriptableObject
 
         if (AmmoConfig.ClipAmmo > 0)
         {
-            Shoot(shootSystem, aimCrosshair, rigAimingTarget);
+            Shoot(shootSystem, aimCrosshair, isAiming);
         }
         else if (AmmoConfig.ClipAmmo == 0)
         {
@@ -82,13 +65,13 @@ public class WeaponConfiguration : ScriptableObject
     {
         _hasPlayedEmptyClip = false;
         StopWeaponEffects(shootSystem);
-        if (ShootConfig.IsAutomaticFire)
-        {
-            AudioConfig.StopAudio(audioSource);
-        }
+        //if (ShootConfig.IsAutomaticFire)
+        //{
+        //    AudioConfig.StopAudio(audioSource);
+        //}
     }
 
-    private void Shoot(ParticleSystem shootSystem, Image aimCrosshair, Transform rigAimingTarget)
+    private void Shoot(ParticleSystem shootSystem, Image aimCrosshair, bool isAiming)
     {
         if (Time.time > ShootConfig.FireRate + _lastShootTime)
         {
@@ -105,23 +88,34 @@ public class WeaponConfiguration : ScriptableObject
             );
 
             Vector3 startPosition = shootSystem.transform.position;
+            Vector3 shootDirection = Vector3.zero;
+            // Calculate direction towards the crosshair modify so this only works when autoaim is active
 
-            // Calculate direction towards the crosshair
-            Vector3 aimWorldPosition = Vector3.zero;
-            if (aimCrosshair != null)
+            if(isAiming)
             {
-                Ray ray = Camera.main.ScreenPointToRay(aimCrosshair.rectTransform.position);
-                if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, ShootConfig.HitMask))
+                Vector3 aimWorldPosition = Vector3.zero;
+                if (aimCrosshair != null)
                 {
-                    aimWorldPosition = hit.point;
+                    Ray ray = Camera.main.ScreenPointToRay(aimCrosshair.rectTransform.position);
+                    if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, ShootConfig.HitMask))
+                    {
+                        aimWorldPosition = hit.point;
+                    }
+                    else
+                    {
+                        aimWorldPosition = ray.GetPoint(TrailConfig.MissDistance); // A fallback if no hit
+                    }
                 }
-                else
-                {
-                    aimWorldPosition = ray.GetPoint(TrailConfig.MissDistance); // A fallback if no hit
-                }
+
+                shootDirection = (aimWorldPosition - startPosition).normalized + spreadDirection;
+            }
+            else
+            {
+                shootDirection = shootSystem.transform.right + spreadDirection;
             }
 
-            Vector3 shootDirection = (aimWorldPosition - startPosition).normalized + spreadDirection;
+            //Vector3 startPosition = shootSystem.transform.position;
+            //Vector3 shootDirection = shootSystem.transform.right + spreadDirection;
 
             AmmoConfig.ClipAmmo--;
 
@@ -137,12 +131,10 @@ public class WeaponConfiguration : ScriptableObject
                     new RaycastHit()
                 ));
             }
-
-            // HandleRecoil(rigAimingTransform);
         }
     }
 
-    private IEnumerator PlayBulletTrail(Vector3 startPoint, Vector3 endPoint, RaycastHit hit)
+    public IEnumerator PlayBulletTrail(Vector3 startPoint, Vector3 endPoint, RaycastHit hit)
     {
         TrailRenderer instance = _trailPool.Get();
         instance.gameObject.SetActive(true);
@@ -202,77 +194,26 @@ public class WeaponConfiguration : ScriptableObject
         return trail;
     }
 
-    private void HandleRecoil(Transform weaponTransform)
-    {
-        if (AmmoConfig.ClipAmmo <= 0)
-        {
-            return;
-        }
-
-        // Stop any ongoing recoil routine before starting a new one
-        if (_recoilRoutine != null)
-        {
-            _activeMonoBehaviour.StopCoroutine(_recoilRoutine);
-        }
-
-        // Start the recoil routine
-        _recoilRoutine = _activeMonoBehaviour.StartCoroutine(StartRecoil(weaponTransform));
-    }
-
     private void StopWeaponEffects(ParticleSystem shootSystem)
     {
         if (shootSystem.isPlaying)
         {
             shootSystem.Stop();
         }
-
-        if (_recoilRoutine != null)
-        {
-            _activeMonoBehaviour.StopCoroutine(_recoilRoutine);
-            _recoilRoutine = null;
-        }
     }
 
-    private IEnumerator StartRecoil(Transform weaponTransform)
+    public bool CanReload()
     {
-        //This logic is FUCKED
-        _originalPosition = weaponTransform.localPosition;
-        Vector3 offset = new Vector3(ShootConfig.Recoil, 0, 0);
-        Vector3 recoilPosition = _originalPosition + offset;
-
-        float elapsedTime = 0;
-
-        // Move weapon to recoil position
-        while (elapsedTime < ShootConfig.RecoilSpeed)
-        {
-            weaponTransform.localPosition = Vector3.Lerp(_originalPosition, recoilPosition, elapsedTime / ShootConfig.RecoilSpeed);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        weaponTransform.localPosition = recoilPosition;
-        elapsedTime = 0;
-
-        // Return weapon to original position
-        while (elapsedTime < ShootConfig.RecoilReturnSpeed)
-        {
-            weaponTransform.localPosition = Vector3.Lerp(recoilPosition, _originalPosition, elapsedTime / ShootConfig.RecoilReturnSpeed);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        weaponTransform.localPosition = _originalPosition;
-
-        // Clear the coroutine reference once recoil completes
-        _recoilRoutine = null;
+        return AmmoConfig.CanReload();
     }
 
-    public void ReloadWeapon(WeaponConfiguration activeWeaponConfig, InputAction.CallbackContext context)
+    public void Reload(ParticleSystem shootSystem)
     {
-        if(AutoReload(activeWeaponConfig) || ManualReload(activeWeaponConfig, context))
-        { 
-            Reload(activeWeaponConfig);
-        }
+        AudioSource audioSource = shootSystem.GetComponent<AudioSource>();
+        StopWeaponEffects(shootSystem);
+        AmmoConfig.Reload();
+        AudioConfig.PlayReloadingClip(audioSource);
+        _hasPlayedEmptyClip = false;
     }
 
     private bool AutoReload(WeaponConfiguration activeWeaponConfig)
@@ -290,30 +231,18 @@ public class WeaponConfiguration : ScriptableObject
             && activeWeaponConfig.CanReload();
     }
 
-    private void Reload(WeaponConfiguration activeWeaponConfig)
-    {
-        activeWeaponConfig.Reload(WeaponInventory.Instance.ActiveWeaponShootSystem);
-        _isReloading = false;
-    }
-
     private void StartReload()
     {
         _isReloading = true;
     }
 
-    private IEnumerator ReloadRoutine(WeaponConfiguration activeWeaponConfig)
+    private void StartRecoil(Transform WeaponTransform)
     {
-        float elapsedTime = 0f;
-        float reloadDuration = activeWeaponConfig.AmmoConfig.ReloadDuration;
-
-        while (elapsedTime < reloadDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        StartReload();
-        //_reloadRoutine = null;
+        
     }
 
+    private void EndRecoil(Transform WeaponTransform)
+    {
+
+    }
 }

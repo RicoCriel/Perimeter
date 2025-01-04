@@ -4,8 +4,5 @@ using UnityEngine;
 
 public class Zombie : Enemy
 {
-    public void AttackPlayer()
-    {
-
-    }
+    
 }
