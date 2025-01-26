@@ -1,47 +1,91 @@
-using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private WaveView _waveView;
-    [SerializeField] private GameObject _enemyPrefab;
-    [SerializeField] private GameObject[] _enemies;
 
-    [SerializeField] private int _enemyCount;
-    [SerializeField] private int _waveNumber = 1;
-    private const int _enemyNumber = 10;
+    [Header("Enemy Prefabs")]
+    [SerializeField] private GameObject[] _regularEnemyPrefabs; 
+    [SerializeField] private GameObject _specialEnemyPrefab;   
 
+    [Header("Spawn Settings")]
     [SerializeField] private Transform[] _zombieSpawnPoints;
-    
+
+    [Header("Wave Settings")]
+    [SerializeField] private int _waveNumber = 1;
+    [SerializeField] private int _spawnMultiplier;
+    [SerializeField] private int _specialEnemyStartWave; 
+    private float _specialEnemySpawnRate = 0.2f;
+    private int _enemyCount;
+
+    public UnityEvent OnAllEnemiesDefeated;
 
     private void Start()
     {
-        SpawnEnemyWave(_waveNumber + _enemyNumber);
-    }
-    private void Update()
-    {
-        _enemyCount = FindObjectsOfType<Enemy>().Length;
-        if (_enemyCount == 0)
-        {
-            _waveNumber++;
-            SpawnEnemyWave(_waveNumber + _enemyNumber);
-        }
+        SpawnEnemyWave(_waveNumber);
+        OnAllEnemiesDefeated.AddListener(HandleWaveCompletion);
     }
 
-    private void SpawnEnemyWave(int enemiesToSpawn)
+    private void SpawnEnemyWave(int waveNumber)
     {
-        for (int i = 0; i < enemiesToSpawn; i++)
+        int totalEnemiesToSpawn = waveNumber + _spawnMultiplier;
+        _enemyCount = totalEnemiesToSpawn;
+
+        for (int i = 0; i < totalEnemiesToSpawn; i++)
         {
-            Instantiate(_enemyPrefab, GenerateSpawnPosition(_zombieSpawnPoints).position, Quaternion.identity);
+            GameObject enemyToSpawn;
+
+            if (waveNumber >= _specialEnemyStartWave && UnityEngine.Random.value < _specialEnemySpawnRate)
+            {
+                enemyToSpawn = _specialEnemyPrefab;
+            }
+            else
+            {
+                int randomIndex = UnityEngine.Random.Range(0, _regularEnemyPrefabs.Length);
+                enemyToSpawn = _regularEnemyPrefabs[randomIndex];
+            }
+
+            GameObject enemy = Instantiate(enemyToSpawn, GenerateSpawnPosition(_zombieSpawnPoints).position, Quaternion.identity);
+            
+            if(enemy.TryGetComponent<AI>(out var enemyAI))
+            { 
+                enemyAI.OnEnemyDefeated.AddListener(HandleEnemyDefeated);
+            }
         }
-        _waveView.UpdateWaveVisual(_waveNumber);
+
+        _waveView.UpdateWaveVisual(waveNumber);
     }
 
     private Transform GenerateSpawnPosition(Transform[] spawnPoints)
     {
         int randomIndex = UnityEngine.Random.Range(0, spawnPoints.Length);
-        Transform randomSpawnPos = _zombieSpawnPoints[randomIndex];
-        return randomSpawnPos;
+        return spawnPoints[randomIndex];
     }
 
+    private void HandleEnemyDefeated()
+    {
+        _enemyCount--;
+
+        if (_enemyCount <= 0)
+        {
+            OnAllEnemiesDefeated.Invoke();
+        }
+    }
+
+    private void HandleWaveCompletion()
+    {
+        _waveNumber++;
+        SpawnEnemyWave(_waveNumber);
+    }
+
+    private void OnDestroy()
+    {
+        OnAllEnemiesDefeated.RemoveListener(HandleWaveCompletion);
+        AI[] enemies = FindObjectsOfType<AI>();
+        foreach (var enemy in enemies)
+        {
+            enemy.OnEnemyDefeated.RemoveListener(HandleEnemyDefeated);
+        }
+    }
 }

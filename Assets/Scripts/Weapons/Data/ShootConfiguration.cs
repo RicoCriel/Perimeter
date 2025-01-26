@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum FIREMODE
+public enum Firemode
 {
-    SINGLE,
-    BURST, 
-    AUTO
+    Single,
+    Burst, 
+    Auto
 }
 
 [CreateAssetMenu(fileName = "Shoot Config", menuName = "Weapons/Shoot Configuration", order = 2)]
 public class ShootConfiguration : ScriptableObject
 {
-    public FIREMODE Firemode;
+    public Firemode Firemode;
     public LayerMask HitMask;
     public Vector3 Spread = new Vector3(0.1f, 0.1f, 0.1f);
     public float FireRate = 0.25f;

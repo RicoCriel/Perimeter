@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.AI;
 
 public class AI : MonoBehaviour
@@ -11,6 +10,8 @@ public class AI : MonoBehaviour
     private EnemyState _currentState;
     private Health _health;
     [SerializeField] private GameObject _moneyPrefab;
+    [SerializeField] private ENEMYTYPE _type;
+    public UnityEvent OnEnemyDefeated;
 
     private void Start()
     {
@@ -18,11 +19,16 @@ public class AI : MonoBehaviour
         _animator = this.GetComponent<Animator>();
         _health = this.GetComponent<Health>();
         _player = GameEnvironment.Instance.Player.transform;
-        _currentState = new Idle(this.gameObject, _health, _agent, _animator, _player , _moneyPrefab);
+        _currentState = new Idle(this.gameObject, _health, _agent, _animator, _player , _moneyPrefab, _type);
     }
 
     private void Update()
     {
-        _currentState = _currentState.ProcessState();
+        EnemyState newState = _currentState.ProcessState();
+        if (_currentState is not Dead && newState is Dead)
+        {
+            OnEnemyDefeated?.Invoke();
+        }
+        _currentState = newState;
     }
 }

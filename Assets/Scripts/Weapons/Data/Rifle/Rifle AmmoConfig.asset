@@ -15,5 +15,5 @@ MonoBehaviour:
   MaxAmmo: 120
   ClipSize: 8
   AvailableAmmo: 120
-  ClipAmmo: 30
+  ClipAmmo: 999
   ReloadDuration: 1

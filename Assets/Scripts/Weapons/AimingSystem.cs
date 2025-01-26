@@ -11,7 +11,6 @@ public class AimingSystem : MonoBehaviour
     public float AimTargetSpeed;
     public float CrosshairSpeed;
 
-    [SerializeField] private GameObject _targetVisual;
     [SerializeField] private float _aimSensitivity;
 
     private Vector3 _originalAimTargetPosition;
@@ -40,9 +39,9 @@ public class AimingSystem : MonoBehaviour
 
     public void Aim(Vector2 lookInput, float aimInput, PlayerState currentState)
     {
-        if (currentState != PlayerState.Aiming || !PlayerHelper.IsInputPressed(aimInput))
+        if (!PlayerHelper.IsInputPressed(aimInput))
         {
-            _targetVisual.SetActive(false);
+            //_targetVisual.SetActive(false);
             _aimSubject.NotifyAimStopped();
             return;
         }
@@ -50,12 +49,12 @@ public class AimingSystem : MonoBehaviour
         GameObject closestEnemy = GetClosestVisibleEnemy();
         if (closestEnemy == null)
         {
-            _targetVisual.SetActive(false);
+            //_targetVisual.SetActive(false);
             _aimSubject.NotifyAimStopped();
             return;
         }
 
-        UpdateTargetVisual(_targetVisual, closestEnemy);
+        //UpdateTargetVisual(_targetVisual, closestEnemy);
         LockOntoTarget(lookInput, closestEnemy.GetComponent<Collider>(), _aimSensitivity);
         _aimSubject.NotifyAimUpdated(AimTarget.position);
     }
@@ -102,7 +101,7 @@ public class AimingSystem : MonoBehaviour
 
     private void UpdateTargetVisual(GameObject targetVisual, GameObject targetEnemy)
     {
-        targetVisual.SetActive(true);
+        //targetVisual.SetActive(true);
         targetVisual.transform.position = targetEnemy.transform.position;
         _aimSubject.NotifyAimStarted();
     }
@@ -156,7 +155,7 @@ public class AimingSystem : MonoBehaviour
 
     public void ControlAimingTarget(Vector2 lookInput, PlayerState currentState)
     {
-        if (currentState == PlayerState.Aiming) return;
+        if (currentState == PlayerState.Aiming || currentState == PlayerState.Falling) return;
 
         if (lookInput.sqrMagnitude > 0.01f)
         {

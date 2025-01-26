@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum ENEMYTYPE
+{
+    CRAWLER, REGULAR, BIG, BOSS
+}
+
 public class EnemyState
 {
     public enum STATE
@@ -24,10 +29,23 @@ public class EnemyState
     protected EnemyState _nextState;
     protected NavMeshAgent _agent;
     protected GameObject _money;
+    protected ENEMYTYPE _type;
     //Tweak these values
     private float _visionDistance = 30.0f;
     private float _visionAngle = 60.0f;
     private float _attackDistance = 3f;
+
+    public EnemyState(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money, ENEMYTYPE type)
+    {
+        _npc = npc;
+        _health = health;
+        _agent = agent;
+        _anim = anim;
+        _stage = EVENT.ENTER;
+        _player = player;
+        _money = money;
+        _type = type;
+    }
 
     public EnemyState(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money)
     {
@@ -35,7 +53,6 @@ public class EnemyState
         _health = health;
         _agent = agent;
         _anim = anim;
-        _stage = EVENT.ENTER;
         _player = player;
         _money = money;
     }

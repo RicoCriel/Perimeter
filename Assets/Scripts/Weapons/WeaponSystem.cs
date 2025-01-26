@@ -5,10 +5,6 @@ using UnityEngine.Events;
 
 public class WeaponSystem : MonoBehaviour
 {
-    private MonoBehaviour _activeMonoBehaviour;
-    private float _lastShootTime;
-    private bool _isReloading;
-    private bool _shouldAutoReload = true;
 
     public WeaponConfiguration WeaponConfiguration;
     public UnityEvent OnFire;
@@ -25,6 +21,7 @@ public class WeaponSystem : MonoBehaviour
     [SerializeField] private Transform _aimTarget;
     [Range(1, 100f)]
     [SerializeField] private float _crossHairSpeed;
+    private float _lastShootTime;
 
     private void Start()
     {
@@ -48,7 +45,7 @@ public class WeaponSystem : MonoBehaviour
         }
     }
 
-    public void FireWeapon(bool wantsToShoot, bool isAiming)
+    public void FireWeapon(bool wantsToShoot, PlayerState playerState)
     {
         if (!wantsToShoot)
         {
@@ -58,7 +55,7 @@ public class WeaponSystem : MonoBehaviour
 
         if (_ammoConfig.ClipAmmo > 0)
         {
-            Shoot(_aimCrossHair, isAiming);
+            Shoot(playerState);
         }
         else if (_ammoConfig.ClipAmmo == 0)
         {
@@ -77,7 +74,7 @@ public class WeaponSystem : MonoBehaviour
         StopWeaponEffects();
     }
 
-    private void Shoot(Image aimCrosshair, bool isAiming)
+    private void Shoot(PlayerState playerState)
     {
         if (Time.time > _shootConfig.FireRate + _lastShootTime)
         {
@@ -93,32 +90,24 @@ public class WeaponSystem : MonoBehaviour
             );
 
             Vector3 startPosition = _weaponParticleSystem.transform.position;
+            Vector3 barrelPosition = _weaponParticleSystem.transform.right;
             Vector3 shootDirection = Vector3.zero;
+            //shoot forwards with bulletspread
+            shootDirection = (barrelPosition /*+ spreadDirection*/).normalized;
 
-            if (isAiming)
+            if (playerState == PlayerState.Aiming)
             {
-                Vector3 aimWorldPosition = Vector3.zero;
-                if (aimCrosshair != null)
-                {
-                    Ray ray = Camera.main.ScreenPointToRay(aimCrosshair.rectTransform.position);
-                    if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, _shootConfig.HitMask))
-                    {
-                        aimWorldPosition = hit.point;
-                    }
-                    else
-                    {
-                        aimWorldPosition = ray.GetPoint(_trailConfig.MissDistance);
-                    }
-                }
-
-                shootDirection = (aimWorldPosition - startPosition).normalized + spreadDirection;
-            }
-            else
-            {
-                shootDirection = _weaponParticleSystem.transform.right + spreadDirection;
+                //shoot towards aiming target w/o bulletspread
+                shootDirection = (_aimTarget.position - startPosition).normalized;
             }
 
             _ammoConfig.ClipAmmo--;
+
+            StartCoroutine(WeaponConfiguration.PlayBulletTrail(
+                    startPosition,
+                    startPosition + (shootDirection * _trailConfig.MissDistance),
+                    new RaycastHit()
+                ));
 
             if (Physics.Raycast(startPosition, shootDirection, out RaycastHit rayHit, float.MaxValue, _shootConfig.HitMask))
             {
@@ -135,11 +124,11 @@ public class WeaponSystem : MonoBehaviour
         }
     }
 
-    public void SingleFire(float fireInput, float aimInput)
+    public void SingleFire(float fireInput, PlayerState playerState)
     {
-        if (_shootConfig.Firemode == FIREMODE.SINGLE)
+        if (_shootConfig.Firemode == Firemode.Single)
         {
-            FireWeapon(PlayerHelper.IsInputPressed(fireInput), PlayerHelper.IsInputPressed(aimInput));
+            FireWeapon(PlayerHelper.IsInputPressed(fireInput), playerState);
 
             if (_ammoConfig.ClipAmmo > 0 && PlayerHelper.IsInputPressed(fireInput))
             {
@@ -148,9 +137,9 @@ public class WeaponSystem : MonoBehaviour
         }
     }
 
-    public void AutoFire(float aimInput, bool shouldFire)
+    public void AutoFire(bool shouldFire, PlayerState playerState)
     {
-        if (_shootConfig.Firemode == FIREMODE.AUTO && shouldFire)
+        if (_shootConfig.Firemode == Firemode.Auto && shouldFire)
         {
             if (_autoFireRoutine != null)
             {
@@ -159,7 +148,7 @@ public class WeaponSystem : MonoBehaviour
 
             if (_autoFireRoutine == null)
             {
-                _autoFireRoutine = StartCoroutine(ExecuteAutoFire(aimInput));
+                _autoFireRoutine = StartCoroutine(ExecuteAutoFire(playerState));
             }
         }
     }
@@ -169,7 +158,7 @@ public class WeaponSystem : MonoBehaviour
         //To be implemented
     }
 
-    private IEnumerator ExecuteAutoFire(float aimInput)
+    private IEnumerator ExecuteAutoFire(PlayerState playerState)
     {
         // Continue to fire the weapon while the automatic fire button is held down
         while (true)
@@ -178,7 +167,7 @@ public class WeaponSystem : MonoBehaviour
             {
                 OnFire?.Invoke();
             }
-            FireWeapon(true, PlayerHelper.IsInputPressed(aimInput));
+            FireWeapon(true,playerState);
             yield return null;
             yield return new WaitForSeconds(_shootConfig.FireRate);
         }
@@ -197,35 +186,6 @@ public class WeaponSystem : MonoBehaviour
         StopWeaponEffects();
         _ammoConfig.Reload();
         _audioConfig.PlayReloadingClip(_audioSource);
-    }
-
-    private bool AutoReloadWeapon()
-    {
-        return !_isReloading
-            && _shouldAutoReload
-            && _ammoConfig.ClipAmmo == 0
-            && WeaponConfiguration.CanReload();
-    }
-
-    private bool ManualReloadWeapon()
-    {
-        return !_isReloading
-            && WeaponConfiguration.CanReload();
-    }
-
-    private void StartReloadMagazine()
-    {
-        _isReloading = true;
-    }
-
-    private void StartRecoil(Transform WeaponTransform)
-    {
-
-    }
-
-    private void EndRecoil(Transform WeaponTransform)
-    {
-
     }
 
     public void UpdateCrosshairPosition()

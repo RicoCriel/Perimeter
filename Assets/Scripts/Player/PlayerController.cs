@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
         _view = GetComponent<PlayerView>();
         _characterController = GetComponent<CharacterController>();
         _model = new PlayerModel(_moveSpeed, _rotationSpeed, _sprintMultiplier, _acceleration, _deceleration);
+        _model.VerticalVelocity = 0;
         _aimingSystem = GetComponent<AimingSystem>();
         _weaponSystem = GetComponent<WeaponSystem>();
         var targetObserver = GetComponent<TargetObserver>();
@@ -99,16 +100,24 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _model.UpdateSpeed();
-        Vector3 movement = PlayerHelper.CalculateMovement(_model.MoveInput);
-        _model.ApplyGravity(movement);
-        _characterController.Move(_model.CurrentSpeed * Time.deltaTime * movement);
+        _model.ApplyGravity(_characterController);
+        Vector3 horizontalMovement = PlayerHelper.CalculateMovement(_model.MoveInput) * _model.CurrentSpeed;
+        Vector3 verticalMovement = Vector3.up * _model.VerticalVelocity;
+        Vector3 movement = (horizontalMovement + verticalMovement) * Time.deltaTime;
+        _characterController.Move(movement);
+
         _aimingSystem.ControlAimingTarget(_model.LookInput, _model.CurrentState);
         _aimingSystem.Aim(_model.LookInput, _model.AimInput, _model.CurrentState);
         _aimingSystem.HandleAimTargetReset(_model.CurrentState);
         _weaponSystem.UpdateCrosshairPosition();
 
-        _view.UpdateAnimation(movement);
-        _view.LookAtDirection(movement, _characterController, _rotationSpeed, _model);
+        _view.UpdateAnimation(_model.MoveInput);
+        Vector3 movementDirection = horizontalMovement.normalized;
+        if (movementDirection != Vector3.zero)
+        {
+            _view.LookAtDirection(movementDirection, _characterController, _rotationSpeed, _model);
+        }
+
         _view.KeepWithinUnitCircle(_view.MapCenter.position, _view.MapRadius);
     }
 
@@ -159,17 +168,17 @@ public class PlayerController : MonoBehaviour
 
     private void OnSingleFirePerformed(InputAction.CallbackContext context)
     {
-        _weaponSystem.SingleFire(context.ReadValue<float>(), _model.AimInput);
+        _weaponSystem.SingleFire(context.ReadValue<float>(),_model.CurrentState);
     }
 
     private void OnAutoFirePerformed(InputAction.CallbackContext context)
     {
-        _weaponSystem.AutoFire(_model.AimInput, true);
+        _weaponSystem.AutoFire(true, _model.CurrentState);
     }
 
     private void OnAutoFireCanceled(InputAction.CallbackContext context)
     {
-        _weaponSystem.AutoFire(_model.AimInput, false);
+        _weaponSystem.AutoFire(false, _model.CurrentState);
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext context)

@@ -5,6 +5,7 @@ public enum PlayerState
     Idle,
     Walking,
     Sprinting,
+    Falling,
     Aiming,
     Dead
 }
@@ -24,8 +25,10 @@ public class PlayerModel
     public float Acceleration;
     
     public float Deceleration;
-    private float _verticalVelocity;
+    public float VerticalVelocity;
     private const float _gravity = -9.81f;
+    private float _fallTime;
+    private const float _fallThreshold = 1f;
 
     public PlayerModel(float moveSpeed, float rotationSpeed, float sprintMultiplier, float acceleration, float deceleration)
     {
@@ -107,10 +110,32 @@ public class PlayerModel
         }
     }
 
-    public void ApplyGravity(Vector3 movement)
+    public void ApplyGravity(CharacterController characterController)
     {
-        _verticalVelocity += _gravity * Time.deltaTime; 
-        movement.y = _verticalVelocity;
+        if (characterController.isGrounded)
+        {
+            VerticalVelocity = 0;
+            _fallTime = 0;
+            SetFallingState(false);
+        }
+        else
+        {
+            VerticalVelocity += _gravity * Time.deltaTime;
+            _fallTime += Time.deltaTime;
+
+            if (_fallTime > _fallThreshold)
+            {
+                SetFallingState(true);
+            }
+        }
+    }
+
+    private void SetFallingState(bool isFalling)
+    { 
+        if(isFalling)
+        { 
+            CurrentState = PlayerState.Falling;
+        }
     }
 
 }

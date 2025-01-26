@@ -36,7 +36,8 @@ public class PlayerView : MonoBehaviour
         Vector3 offset = transform.position - position;
         if (offset.magnitude > radius)
         {
-            transform.position = position + offset.normalized * radius;
+            //Show leaving objective area + kill player if staying too long here
+            //transform.position = position + offset.normalized * radius;
         }
     }
 }

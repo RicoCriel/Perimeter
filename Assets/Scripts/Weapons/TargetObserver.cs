@@ -8,12 +8,13 @@ public class TargetObserver : MonoBehaviour, IAimObserver
 
     public void OnAimStarted()
     {
-        AimCrosshair.enabled = true;
+        //Change logic
+        //AimCrosshair.enabled = true;
     }
 
     public void OnAimStopped()
     {
-        AimCrosshair.enabled = false;
+        //AimCrosshair.enabled = false;
     }
 
     public void OnAimUpdated(Vector3 targetPosition)

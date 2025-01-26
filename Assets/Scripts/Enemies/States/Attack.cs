@@ -7,7 +7,7 @@ public class Attack : EnemyState
 {
     private AudioSource _attackAudioSource; 
 
-    public Attack(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money)
+    public Attack(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money, ENEMYTYPE type)
         : base(npc, health, agent, anim, player, money)
     {
         Name = STATE.ATTACK;
@@ -28,13 +28,13 @@ public class Attack : EnemyState
 
         if (!IsAlive())
         {
-            _nextState = new Dead(_npc, _health, _agent, _anim, _player, _money);
+            _nextState = new Dead(_npc, _health, _agent, _anim, _player, _money, _type);
             _stage = EVENT.EXIT;
         }
 
         if (!CanAttackPlayer())
         {
-            _nextState = new Idle(_npc, _health, _agent, _anim, _player, _money);
+            _nextState = new Idle(_npc, _health, _agent, _anim, _player, _money, _type);
             _stage = EVENT.EXIT;
         }
     }

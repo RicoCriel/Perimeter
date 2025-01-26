@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,10 +9,10 @@ public class Dead : EnemyState
     private Collider _collider;
     private float _deadTime;
     private float _disableTime = 2f;
-    private int _moneyAmount = Random.Range(1, 3);
+    private int _moneyAmount = UnityEngine.Random.Range(1, 3);
 
-    public Dead(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money)
-        : base(npc, health, agent, anim, player, money)
+    public Dead(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money, ENEMYTYPE type)
+        : base(npc, health, agent, anim, player, money, type)
     {
         Name = STATE.DEAD;
         _dyingAudioSource = npc.GetComponent<AudioSource>();
@@ -54,9 +55,9 @@ public class Dead : EnemyState
     private void SpawnMoney()
     {
         Vector3 randomOffset = new Vector3(
-            Random.Range(-1.5f, 1.5f), 
-            Random.Range(0, 1.5f),                        
-            Random.Range(-1.5f, 1.5f) 
+            UnityEngine.Random.Range(-1.5f, 1.5f), 
+            UnityEngine.Random.Range(0, 1.5f),                        
+            UnityEngine.Random.Range(-1.5f, 1.5f) 
         );
 
         Vector3 spawnPosition = _npc.transform.position + randomOffset;

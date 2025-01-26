@@ -13,7 +13,5 @@ public static class PlayerHelper
         Vector3 movement = new Vector3(input.x, 0, input.y);
         return -movement.ConvertToIsoCoords();
     }
-
-
 }
  

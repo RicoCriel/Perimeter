@@ -8,7 +8,7 @@ public enum AnimalState
     Scared,
 }
 
-public class Chicken : MonoBehaviour
+public class Chicken : Animal
 {
     //private Vector3 _center = Vector3.zero; 
     //private float _mapRadius = 19.0f;

@@ -5,12 +5,31 @@ using UnityEngine.AI;
 
 public class Pursue : EnemyState
 {
-    public Pursue(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money)
-        : base(npc, health, agent, anim, player, money)
+    public Pursue(GameObject npc, Health health, NavMeshAgent agent, Animator anim, Transform player, GameObject money, ENEMYTYPE type)
+        : base(npc, health, agent, anim, player, money, type)
     {
         Name = STATE.PURSUE;
-        _agent.speed = 3f;
-        _agent.isStopped = false;   
+        switch (type)
+        {
+            case ENEMYTYPE.REGULAR:
+                _agent.speed = 3f;
+                _agent.isStopped = false;
+                break;
+            case ENEMYTYPE.CRAWLER:
+                _agent.speed = 5f;
+                _agent.isStopped = false;
+                break;
+            case ENEMYTYPE.BIG:
+                _agent.speed = 10f;
+                _agent.isStopped = false;
+                break;
+            case ENEMYTYPE.BOSS:
+                _agent.speed = 2f;
+                _agent.isStopped = false;
+                break;
+            default:
+                break;
+        }
     }
 
     public override void Enter()
@@ -28,18 +47,18 @@ public class Pursue : EnemyState
         { 
             if(CanAttackPlayer())
             {
-                _nextState = new Attack(_npc, _health, _agent, _anim, _player, _money);
+                _nextState = new Attack(_npc, _health, _agent, _anim, _player, _money, _type);
                 _stage = EVENT.EXIT;
             }
             else if(!CanSeePlayer())
             { 
-                _nextState = new Roam(_npc, _health, _agent, _anim, _player, _money);
+                _nextState = new Roam(_npc, _health, _agent, _anim, _player, _money, _type);
                 _stage = EVENT.EXIT;
             }
 
             if (!IsAlive())
             {
-                _nextState = new Dead(_npc, _health, _agent, _anim, _player, _money);
+                _nextState = new Dead(_npc, _health, _agent, _anim, _player, _money, _type);
                 _stage = EVENT.EXIT;
             }
         }
