@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using UnityEditor;
 
 [DefaultExecutionOrder(1000)]
 public class MenuUIHandler : MonoBehaviour
@@ -12,23 +10,23 @@ public class MenuUIHandler : MonoBehaviour
 
     private void Start()
     {
-        _startButton.onClick.AddListener(LoadGame);
-        _quitButton.onClick.AddListener(ExitGame);
+        _startButton.onClick.AddListener(Play);
+        _quitButton.onClick.AddListener(Quit);
     }
 
-    private void LoadGame()
+    private void OnDisable()
     {
-        SceneManager.LoadScene(1);
+        _startButton.onClick.RemoveListener(Play);
+        _quitButton.onClick.RemoveListener(Quit);
     }
 
-    private void ExitGame()
+    private void Play()
     {
-#if UNITY_EDITOR
-        EditorApplication.ExitPlaymode();
-#else
-        Application.Quit();
-#endif
+        LevelManager.Instance.LoadLevel("NavigationMenu", "CrossFade");
     }
 
-
+    private void Quit()
+    {
+        LevelManager.Instance.ExitGame();
+    }
 }

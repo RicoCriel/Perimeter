@@ -5,12 +5,24 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/MainMenu.unity
+  - enabled: 1
+    path: Assets/Scenes/Menus/MainMenu.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Level_ChickenFarm.unity
+    path: Assets/Scenes/Menus/NavigationMenu.unity
+    guid: b41c0461586598e41b73d26049e2ac2b
+  - enabled: 1
+    path: Assets/Scenes/Levels/Island_01.unity
     guid: 65a8d2d61d38c144d93c0e0bca8acdab
+  - enabled: 1
+    path: Assets/Scenes/Levels/Island_02.unity
+    guid: bdc2ecc9eda4fcd489fbe51dd6dc2fe5
+  - enabled: 1
+    path: Assets/Scenes/Levels/Island_03.unity
+    guid: 816423c7aab71c04ab0db4c162f49df8
+  - enabled: 1
+    path: Assets/Scenes/Levels/Island_04.unity
+    guid: f131903819bd1fa45a37720ad72d53dc
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 2e651525405b77b418f26be9d788ae09, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5ebffcd88082fc84f96c520c57bc595a, type: 3}

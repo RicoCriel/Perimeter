@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         FollowTarget();
-        HandleObstructions();
+        //HandleObstructions();
     }
 
     private void FollowTarget()
