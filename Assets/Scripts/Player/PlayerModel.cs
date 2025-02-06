@@ -27,6 +27,7 @@ public class PlayerModel
     public float Deceleration;
     public float VerticalVelocity;
     private const float _gravity = -9.81f;
+    private float _gravityMultiplier = 3f;
     private float _fallTime;
     private const float _fallThreshold = 1f;
 
@@ -120,7 +121,7 @@ public class PlayerModel
         }
         else
         {
-            VerticalVelocity += _gravity * Time.deltaTime;
+            VerticalVelocity += (_gravity * _gravityMultiplier) * Time.deltaTime;
             _fallTime += Time.deltaTime;
 
             if (_fallTime > _fallThreshold)

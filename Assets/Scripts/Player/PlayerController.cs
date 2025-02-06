@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    //This class is responsible for all the playerinput and player actions related logic
     [SerializeField] private PlayerView _view;
     [Header("Player Movement Setttings")]
     [SerializeField] private float _moveSpeed;
@@ -15,6 +17,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController _characterController;
     private AimingSystem _aimingSystem;
     private WeaponSystem _weaponSystem;
+    private Collider[] _colliders = new Collider[5];
 
     [SerializeField] private InputActionAsset _playerControls;
     private InputActionMap _gameplayActionMap;
@@ -25,6 +28,8 @@ public class PlayerController : MonoBehaviour
     private InputAction _aimInputAction;
     private InputAction _singleFireInputAction;
     private InputAction _automaticFireInputAction;
+
+    public static event Action<Vector3> OnPlayerMoved;
 
     private void Awake()
     {
@@ -118,6 +123,11 @@ public class PlayerController : MonoBehaviour
             _view.LookAtDirection(movementDirection, _characterController, _rotationSpeed, _model);
         }
 
+        if (OnPlayerMoved != null)
+        {
+            OnPlayerMoved.Invoke(transform.position);
+        }
+
         _view.KeepWithinUnitCircle(_view.MapCenter.position, _view.MapRadius);
     }
 
@@ -183,12 +193,22 @@ public class PlayerController : MonoBehaviour
 
     private void OnInteractPerformed(InputAction.CallbackContext context)
     {
-        //refactor with interact system or interface/raycast
-        WeaponBox.Instance.ShouldInteract = true;
+        float radius = 5f; // Interaction radius
+        Vector3 position = transform.position; // Player position
+        int hitCount = Physics.OverlapSphereNonAlloc(position, radius, _colliders, ~0, QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            if (_colliders[i].TryGetComponent(out Interactable interactable))
+            {
+                interactable.Interact();
+                break; // Only interact with the first valid object
+            }
+        }
     }
 
     private void OnInteractCanceled(InputAction.CallbackContext context)
     {
-        WeaponBox.Instance.ShouldInteract = false;
+        //WeaponBox.Instance.ShouldInteract = false;
     }
 }

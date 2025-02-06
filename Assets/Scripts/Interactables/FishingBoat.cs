@@ -8,7 +8,7 @@ public class FishingBoat : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            LevelManager.Instance.LoadLevel("NavigationMenu", "CrossFade");
+            LevelManager.Instance?.LoadLevel("NavigationMenu", "CrossFade");
             //Save progress
             //Save score
         }

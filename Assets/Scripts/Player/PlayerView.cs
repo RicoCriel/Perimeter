@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerView : MonoBehaviour
 {
     public Transform MapCenter;
+    public float InteractRange;
     public float MapRadius;
     private Animator _animator;
 
