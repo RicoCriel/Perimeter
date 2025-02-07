@@ -23,8 +23,8 @@ public class PlayerModel
     public bool IsSprinting { get; private set; }
 
     public float Acceleration;
-    
     public float Deceleration;
+
     public float VerticalVelocity;
     private const float _gravity = -9.81f;
     private float _gravityMultiplier = 3f;
@@ -96,20 +96,23 @@ public class PlayerModel
     public void UpdateSpeed()
     {
         float targetSpeed = CurrentState == PlayerState.Sprinting ? MoveSpeed * SprintMultiplier : MoveSpeed;
-        
+
         if (MoveInput.magnitude > 0)
         {
+            //Fix acceleration and deceleration properly later
+
+            //CurrentSpeed = Mathf.MoveTowards(CurrentSpeed, targetSpeed, Acceleration * Time.deltaTime);
             CurrentSpeed = Mathf.Lerp(CurrentSpeed, targetSpeed, Acceleration * Time.deltaTime);
-        }
-        else if(CurrentState == PlayerState.Aiming)
-        {
-            CurrentSpeed = 0;
         }
         else
         {
-            CurrentSpeed = Mathf.Lerp(CurrentSpeed, 0, Deceleration * Time.deltaTime);
+            targetSpeed = 0;
+            CurrentSpeed = Mathf.MoveTowards(CurrentSpeed, targetSpeed, Deceleration * Time.deltaTime);
         }
+
+        //Debug.Log(CurrentSpeed);
     }
+
 
     public void ApplyGravity(CharacterController characterController)
     {

@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class Crate : Interactable
 {
@@ -29,5 +28,6 @@ public class Crate : Interactable
     {
         int randomIndex = Random.Range(0, _componentPrefabs.Length);
         Instantiate(_componentPrefabs[randomIndex], _lootSpawnPos.position, Quaternion.identity);
+        _animator.enabled = false;
     }
 }

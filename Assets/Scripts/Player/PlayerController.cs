@@ -15,8 +15,8 @@ public class PlayerController : MonoBehaviour
 
     private PlayerModel _model;
     private CharacterController _characterController;
-    private AimingSystem _aimingSystem;
-    private WeaponSystem _weaponSystem;
+    //private AimingSystem _aimingSystem;
+    //private WeaponSystem _weaponSystem;
     private Collider[] _colliders = new Collider[5];
 
     [SerializeField] private InputActionAsset _playerControls;
@@ -38,11 +38,11 @@ public class PlayerController : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
         _model = new PlayerModel(_moveSpeed, _rotationSpeed, _sprintMultiplier, _acceleration, _deceleration);
         _model.VerticalVelocity = 0;
-        _aimingSystem = GetComponent<AimingSystem>();
-        _weaponSystem = GetComponent<WeaponSystem>();
-        var targetObserver = GetComponent<TargetObserver>();
+        //_aimingSystem = GetComponent<AimingSystem>();
+        //_weaponSystem = GetComponent<WeaponSystem>();
+        //var targetObserver = GetComponent<TargetObserver>();
 
-        _aimingSystem.RegisterObserver(targetObserver);
+        //_aimingSystem.RegisterObserver(targetObserver);
     }
 
     private void OnEnable()
@@ -111,10 +111,10 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = (horizontalMovement + verticalMovement) * Time.deltaTime;
         _characterController.Move(movement);
 
-        _aimingSystem.ControlAimingTarget(_model.LookInput, _model.CurrentState);
-        _aimingSystem.Aim(_model.LookInput, _model.AimInput, _model.CurrentState);
-        _aimingSystem.HandleAimTargetReset(_model.CurrentState);
-        _weaponSystem.UpdateCrosshairPosition();
+        //_aimingSystem.ControlAimingTarget(_model.LookInput, _model.CurrentState);
+        //_aimingSystem.Aim(_model.LookInput, _model.AimInput, _model.CurrentState);
+        //_aimingSystem.HandleAimTargetReset(_model.CurrentState);
+        //_weaponSystem.UpdateCrosshairPosition();
 
         _view.UpdateAnimation(_model.MoveInput);
         Vector3 movementDirection = horizontalMovement.normalized;
@@ -178,24 +178,23 @@ public class PlayerController : MonoBehaviour
 
     private void OnSingleFirePerformed(InputAction.CallbackContext context)
     {
-        _weaponSystem.SingleFire(context.ReadValue<float>(),_model.CurrentState);
+        //_weaponSystem.SingleFire(context.ReadValue<float>(),_model.CurrentState);
     }
 
     private void OnAutoFirePerformed(InputAction.CallbackContext context)
     {
-        _weaponSystem.AutoFire(true, _model.CurrentState);
+        //_weaponSystem.AutoFire(true, _model.CurrentState);
     }
 
     private void OnAutoFireCanceled(InputAction.CallbackContext context)
     {
-        _weaponSystem.AutoFire(false, _model.CurrentState);
+        //_weaponSystem.AutoFire(false, _model.CurrentState);
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext context)
     {
-        float radius = 5f; // Interaction radius
         Vector3 position = transform.position; // Player position
-        int hitCount = Physics.OverlapSphereNonAlloc(position, radius, _colliders, ~0, QueryTriggerInteraction.Ignore);
+        int hitCount = Physics.OverlapSphereNonAlloc(position, _view.InteractRange, _colliders, ~0, QueryTriggerInteraction.Ignore);
 
         for (int i = 0; i < hitCount; i++)
         {

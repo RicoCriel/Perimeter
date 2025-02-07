@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerView : MonoBehaviour
 {
+    //This class is only responsible for updating the visuals of the player
     public Transform MapCenter;
     public float InteractRange;
     public float MapRadius;
@@ -9,7 +10,7 @@ public class PlayerView : MonoBehaviour
 
     private void Awake()
     {
-        _animator = GetComponent<Animator>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     public void UpdateAnimation(Vector3 input)

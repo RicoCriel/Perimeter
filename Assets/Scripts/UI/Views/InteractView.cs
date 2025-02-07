@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
-using UnityEngine.UI;
 
 public class InteractView : MonoBehaviour
 {
@@ -29,14 +28,14 @@ public class InteractView : MonoBehaviour
         UpdateUIPosition();
     }
 
-    public void ShowInteraction(string text)
+    public void ShowInteractionUI(string text)
     {
         InteractionText.text = text;
         InteractionPanel.gameObject.SetActive(true);
         _outline.OutlineWidth = 3f;
     }
 
-    public void HideInteraction()
+    public void HideInteractionUI()
     {
         InteractionPanel.gameObject.SetActive(false);
         _outline.OutlineWidth = 0f;
@@ -54,12 +53,12 @@ public class InteractView : MonoBehaviour
         }
         else
         {
-            DisableInteraction();
+            DisableInteractionUI();
             return;
         }
     }
 
-    private void DisableInteraction()
+    private void DisableInteractionUI()
     {
         InteractionPanel.gameObject.SetActive(false);
         _outline.enabled = false;

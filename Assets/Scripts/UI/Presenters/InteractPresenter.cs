@@ -19,11 +19,11 @@ public class InteractPresenter
     public void SetInteraction(string text)
     {
         _model.SetInteractionText(text);
-        _view.ShowInteraction(text);
+        _view.ShowInteractionUI(text);
     }
 
     public void ClearInteraction()
     {
-        _view.HideInteraction();
+        _view.HideInteractionUI();
     }
 }

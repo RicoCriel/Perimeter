@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: LOOT
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0c699dbbc9857dc4eb5f13dce8082f15, type: 2}
+  m_sharedMaterial: {fileID: 6745059226608401243, guid: 0c699dbbc9857dc4eb5f13dce8082f15, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -414,7 +414,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.6679125, y: 3.362588, z: 3.2454789}
+  m_Size: {x: 8, y: 3, z: 4}
   m_Center: {x: 0.12631845, y: 1.3087063, z: 0.0045229197}
 --- !u!54 &815034432263625508
 Rigidbody:
