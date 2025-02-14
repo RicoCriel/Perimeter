@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class Loot : MonoBehaviour
 {
@@ -7,10 +8,16 @@ public class Loot : MonoBehaviour
     private Tweener _tweener;
     private float _moveSpeed;
 
+    [SerializeField] private string _lootType;
+    private int _lootAmount;
+    public static event Action<string> OnLootCollected; //Event to notify UI
+
+
     private void OnEnable()
     {
         _playerTransform = FindObjectOfType<PlayerController>()?.transform;
-        _moveSpeed = Random.Range(10f, 15f);
+        _moveSpeed = UnityEngine.Random.Range(10f, 15f);
+        _lootAmount = UnityEngine.Random.Range(1, 8);
 
         if (_playerTransform != null)
         {
@@ -31,7 +38,7 @@ public class Loot : MonoBehaviour
 
     private void SendLootReceivedMessage()
     {
-        //update ui
+        OnLootCollected?.Invoke($"{_lootAmount} {_lootType}");
         this.gameObject.SetActive(false);
         //return to object pool
     }

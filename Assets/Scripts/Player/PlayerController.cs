@@ -7,10 +7,8 @@ public class PlayerController : MonoBehaviour
     //This class is responsible for all the playerinput and player actions related logic
     [SerializeField] private PlayerView _view;
     [Header("Player Movement Setttings")]
-    [SerializeField] private float _moveSpeed;
+    [SerializeField] private float _maxSpeed;
     [SerializeField] private float _sprintMultiplier;
-    [SerializeField] private float _acceleration;
-    [SerializeField] private float _deceleration;
     [SerializeField] private float _rotationSpeed;
 
     private PlayerModel _model;
@@ -36,7 +34,7 @@ public class PlayerController : MonoBehaviour
         _gameplayActionMap = _playerControls.FindActionMap("Gameplay");
         _view = GetComponent<PlayerView>();
         _characterController = GetComponent<CharacterController>();
-        _model = new PlayerModel(_moveSpeed, _rotationSpeed, _sprintMultiplier, _acceleration, _deceleration);
+        _model = new PlayerModel(_maxSpeed, _rotationSpeed, _sprintMultiplier);
         _model.VerticalVelocity = 0;
         //_aimingSystem = GetComponent<AimingSystem>();
         //_weaponSystem = GetComponent<WeaponSystem>();

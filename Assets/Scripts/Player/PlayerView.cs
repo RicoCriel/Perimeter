@@ -18,6 +18,16 @@ public class PlayerView : MonoBehaviour
         _animator.SetFloat("Speed", input.magnitude);
     }
 
+    public void TriggerAnimation(string triggerName)
+    {
+        _animator.SetTrigger(triggerName);
+    }
+
+    public void ResetTriggerAnimation(string triggerName)
+    {
+        _animator.ResetTrigger(triggerName);
+    }
+
     public void LookAtDirection(Vector3 direction, CharacterController characterController, float rotationSpeed, PlayerModel model)
     {
         if (direction.sqrMagnitude > 0.01f || model.MoveInput.sqrMagnitude > 0.01f)
